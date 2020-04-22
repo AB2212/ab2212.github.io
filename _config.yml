@@ -22,6 +22,7 @@ markdown: kramdown
 gems:
     - jekyll-seo-tag
     - jekyll-sitemap
+    - jekyll-feed
 
 kramdown:
   math_engine: katex
