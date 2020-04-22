@@ -1,16 +1,28 @@
 # Site settings
 title: Dig Deep
 subtitle: Machine Learning Blog
-email: liamtrask@gmail.com
-description: "A machine learning craftsmanship blog."
+email: abhijeetbiswas2212.ab@gmail.com
+description: "A blog where we dig deep into the Math and Code behind Machine learning Algorithms"
 baseurl: ""
 url: "https://ab2212.github.io"
-twitter_username: iamtrask
-github_username:  iamtrask
+twitter_username: AbhiB2212
+github_username:  AB2212
+
+
+titles_from_headings:
+  enabled:     true
+  strip_title: true
+  collections: true
 
 # Build settings
+highlighter: rouge
 markdown: kramdown
-highlighter: pygments
+kramdown:
+  math_engine: katex
+  input: GFM
+  auto_ids: true
+  hard_wrap: false
+  syntax_highlighter: rouge
 permalink: pretty
 paginate: 5
 exclude: ["node_modules"]
@@ -18,6 +30,7 @@ exclude: ["node_modules"]
 analytics :
   provider : google
   google:
-    tracking_id : 'UA-36138203-3'
+    tracking_id : 'XXXX'
   getclicky :
     site_id
+    
