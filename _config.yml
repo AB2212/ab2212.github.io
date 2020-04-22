@@ -1,10 +1,10 @@
 # Site settings
-title: i am trask
+title: Dig Deep
 subtitle: Machine Learning Blog
 email: liamtrask@gmail.com
 description: "A machine learning craftsmanship blog."
 baseurl: ""
-url: "https://iamtrask.github.io"
+url: "https://ab2212.github.io"
 twitter_username: iamtrask
 github_username:  iamtrask
 
