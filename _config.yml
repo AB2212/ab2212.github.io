@@ -8,6 +8,7 @@ url: "https://ab2212.github.io"
 twitter_username: AbhiB2212
 github_username:  AB2212
 
+use_math: true
 
 titles_from_headings:
   enabled:     true
