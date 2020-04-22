@@ -1,3 +1,12 @@
+---
+layout:     post
+title:      "Math Behing GBM and XGBoost"
+subtitle:   "Demystifying the mathematics of Gradient Boosting Machines"
+date:       2014-11-22 12:00:00
+author:     "iamtrask"
+header-img: "img/post-bg-06.jpg"
+---
+
 Many of you ML enthusiasts out there might have used boosting algorithms to get the best predictions (most of the time) on your data. In this blog post, I want to demystify how these algorithms work and how are they different from others. But why would anyone want to do the tough job of looking under the hood to understand the inner working? This post is for all the curious minds out there who want to learn and innovate new techniques to tackle unprecedented problems. Let’s get started!
 
 **Table of Content**
