@@ -18,6 +18,10 @@ titles_from_headings:
 # Build settings
 highlighter: rouge
 markdown: kramdown
+
+gems:
+    - jekyll-seo-tag
+
 kramdown:
   math_engine: katex
   input: GFM
