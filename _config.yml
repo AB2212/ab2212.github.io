@@ -28,6 +28,12 @@ permalink: pretty
 paginate: 5
 exclude: ["node_modules"]
 
+plugins:
+  - jekyll-feed
+  - jekyll-gist
+  - jekyll-octicons
+  - jekyll-github-metadata
+  
 analytics :
   provider : google
   google:
