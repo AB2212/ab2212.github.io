@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Math Behing GBM and XGBoost"
-subtitle:   "Demystifying the mathematics of Gradient Boosting Machines"
+title:      "Math Behind GBM and XGBoost"
+subtitle:   "Demystifying the mathematics behind Gradient Boosting Machines"
 date:       2020-04-04 12:00:00
 author:     "Abhijeet Biswas"
 header-img: "img/lightning.jpg"
