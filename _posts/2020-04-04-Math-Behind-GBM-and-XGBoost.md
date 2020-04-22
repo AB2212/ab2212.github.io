@@ -2,8 +2,8 @@
 layout:     post
 title:      "Math Behing GBM and XGBoost"
 subtitle:   "Demystifying the mathematics of Gradient Boosting Machines"
-date:       2014-11-22 12:00:00
-author:     "iamtrask"
+date:       2020-04-04 00:00:00
+author:     "Abhijeet Biswas"
 header-img: "img/post-bg-06.jpg"
 ---
 
