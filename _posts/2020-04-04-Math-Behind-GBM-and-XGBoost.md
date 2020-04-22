@@ -148,7 +148,7 @@ $\mathcal{L}^{(t)}(q) = -\frac{1}{2}\sum\_{j=1}^{T}\frac{(\sum\_{i \in I\_{j}}g\
 
 We have the optimal weight for each of the leaf nodes, we now need to search for the optimal tree structure. The above equation can be used to measure the quality of a tree structure $q$. The score is like the impurity score for evaluating the trees, except that it is derived for a wider range of objective functions. 
 
-Normally it is impossible to enumerate all the possible tree structures q. A greedy algorithxgboost_gradients.PNGm that starts from a
+Normally it is impossible to enumerate all the possible tree structures q. A greedy algorithm that starts from a
 single leaf and iteratively adds branches to the tree is used instead. Assume that $I\_{L}$ and $I\_{R}$ are the instance sets of left and right nodes after the split. Letting $I = I\_{L} \cup I\_{R}$, then the loss reduction after the split is given by,
 
 $\mathcal{L}\_{split} = \frac{1}{2}[\frac{(\sum\_{i \in I\_{L}}g\_{i})^2}{\sum\_{i \in I\_{L}}h\_{i}+\lambda} + \frac{(\sum\_{i \in I\_{R}}g\_{i})^2}{\sum\_{i \in I\_{R}}h\_{i}+\lambda} - \frac{(\sum\_{i \in I}g\_{i})^2}{\sum\_{i \in I}h\_{i}+\lambda}] -\gamma (T+1 - T)$
