@@ -88,7 +88,11 @@ where $ F = \{f(x) = w\_{q(x)}\}(q: \mathbb{R}^{m} \rightarrow T, w \in \mathbb{
 
 $q$ represents the structure of the tree that maps an input to the corresponding leaf index at which it ends up being. $T$ is the number of leaves in the tree. Each regression tree contains a continuous score on each of its leaf. $w\_i$ represents the score on i-th leaf. For a given example, we will use the decision rules in the trees (given by $q$) to classify it into the leaves and calculate the final prediction by summing up the score in the corresponding leaves (given by $w$) as shown in the image below. 
 
-![xgboost tree](/img/xgboost.PNG)
+<!---
+[xgboost tree](/img/xgboost.PNG)
+--->
+
+<img class="img-responsive" width="100%" src="{{ site.baseurl }}/img/xgboost.PNG" alt="">
 
 To learn the set of functions used in the model, we minimize the following regularized objective. 
 
