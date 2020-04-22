@@ -89,7 +89,9 @@ where $ F = \{f(x) = w\_{q(x)}\}(q: \mathbb{R}^{m} \rightarrow T, w \in \mathbb{
 $q$ represents the structure of the tree that maps an input to the corresponding leaf index at which it ends up being. $T$ is the number of leaves in the tree. Each regression tree contains a continuous score on each of its leaf. $w\_i$ represents the score on i-th leaf. For a given example, we will use the decision rules in the trees (given by $q$) to classify it into the leaves and calculate the final prediction by summing up the score in the corresponding leaves (given by $w$) as shown in the image below. 
 
 
+<!---
 [xgboost tree](/img/xgboost.PNG)
+--->
 
 
 <img class="img-responsive" width="50%" src="{{ site.baseurl }}/img/xgboost.PNG" alt="">
@@ -138,11 +140,15 @@ We now calculate the corresponding optimal value for given tree structure $q$ by
 
 $\mathcal{L}^{(t)}(q) = -\frac{1}{2}\sum\_{j=1}^{T}\frac{(\sum\_{i \in I\_{j}}g\_{i})^2}{\sum\_{i \in I\_{j}}h\_{i}+\lambda} +\gamma T$
 
+<!---
 ![xgboost_gradient](/img/xgboost_gradients.PNG)
+--->
+
+<img class="img-responsive" width="50%" src="{{ site.baseurl }}/img/xgboost_gradients.PNG" alt="">
 
 We have the optimal weight for each of the leaf nodes, we now need to search for the optimal tree structure. The above equation can be used to measure the quality of a tree structure $q$. The score is like the impurity score for evaluating the trees, except that it is derived for a wider range of objective functions. 
 
-Normally it is impossible to enumerate all the possible tree structures q. A greedy algorithm that starts from a
+Normally it is impossible to enumerate all the possible tree structures q. A greedy algorithxgboost_gradients.PNGm that starts from a
 single leaf and iteratively adds branches to the tree is used instead. Assume that $I\_{L}$ and $I\_{R}$ are the instance sets of left and right nodes after the split. Letting $I = I\_{L} \cup I\_{R}$, then the loss reduction after the split is given by,
 
 $\mathcal{L}\_{split} = \frac{1}{2}[\frac{(\sum\_{i \in I\_{L}}g\_{i})^2}{\sum\_{i \in I\_{L}}h\_{i}+\lambda} + \frac{(\sum\_{i \in I\_{R}}g\_{i})^2}{\sum\_{i \in I\_{R}}h\_{i}+\lambda} - \frac{(\sum\_{i \in I}g\_{i})^2}{\sum\_{i \in I}h\_{i}+\lambda}] -\gamma (T+1 - T)$
