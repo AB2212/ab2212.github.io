@@ -94,7 +94,7 @@ $q$ represents the structure of the tree that maps an input to the corresponding
 --->
 
 
-<img class="img-responsive" width="50%" src="{{ site.baseurl }}/img/xgboost.PNG" alt="">
+<img class="img-responsive" width="100%" src="{{ site.baseurl }}/img/xgboost.PNG" alt="">
 
 To learn the set of functions used in the model, we minimize the following regularized objective. 
 
@@ -144,7 +144,7 @@ $\mathcal{L}^{(t)}(q) = -\frac{1}{2}\sum\_{j=1}^{T}\frac{(\sum\_{i \in I\_{j}}g\
 ![xgboost_gradient](/img/xgboost_gradients.PNG)
 --->
 
-<img class="img-responsive" width="50%" src="{{ site.baseurl }}/img/xgboost_gradients.PNG" alt="">
+<img class="img-responsive" width="100%" src="{{ site.baseurl }}/img/xgboost_gradients.PNG" alt="">
 
 We have the optimal weight for each of the leaf nodes, we now need to search for the optimal tree structure. The above equation can be used to measure the quality of a tree structure $q$. The score is like the impurity score for evaluating the trees, except that it is derived for a wider range of objective functions. 
 
