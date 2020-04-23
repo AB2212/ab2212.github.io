@@ -14,6 +14,7 @@ Many of you ML enthusiasts out there might have used boosting algorithms to get 
 {:toc}
 
 
+<p> </p>
 
 #### **Supervised Machine Learning**
 To solve any supervised Machine Learning problem, given the dataset $\\{(x\_i, y\_i)\\}\_{i=1,\ldots,n}$ where $x$ are the features and $y$ is the target, we try to restore the function $y = f(x)$ by approximately estimating $\hat{f}(x)$ while measuring how good the mapping is using a loss function $L(y,f)$ and then take average over all the dataset points to get the final cost, i.e., 
