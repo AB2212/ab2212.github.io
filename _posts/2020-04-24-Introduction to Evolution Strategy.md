@@ -54,7 +54,7 @@ Thinking in terms of natural selection, we are creating a population of paramete
     - Create population of parameters $\theta\_1,...\theta\_{100}$ by adding gaussian noise to the best parameter (decay the noise as we keep reaching better performance to encourage exploitation) 
     - Evaluate the objective function for all the parameters and select the top N best performing parameters (elite parameters)
     - Best parameter = Mean(top N elite parameters)
-    
+<p> </p>
 <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/ES.png" alt="">
   <figcaption class="image-caption" style="font-size:11px">Source: https://en.wikipedia.org/wiki/CMA-ES. Image based on work by Nikolaus Hansen and others.
@@ -66,7 +66,7 @@ Thinking in terms of natural selection, we are creating a population of paramete
 
 #### Python Implementation from scratch
 
-Let's go through a simple example in Python to get a better understanding. We will start by loading the required libraries and our MNIST Handwritten digit dataset.
+Let's go through a simple example in Python to get a better understanding. We will start by loading the required libraries and the MNIST Handwritten digit dataset.
 
 ```python 
 # Importing all the required libraries
