@@ -40,7 +40,7 @@ Thinking in terms of natural selection, we are creating a population of paramete
 
  <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/giraffe.png" alt="">
-  <figcaption class="image-caption">Source: adapted from Lur thematic encyclopedia, via Wikimedia Commons </figcaption>
+  <figcaption class="image-caption" style="font-size:11px">Source: adapted from Lur thematic encyclopedia, via Wikimedia Commons </figcaption>
 </figure>
 
 
@@ -54,10 +54,11 @@ Pseudo Code:
     
 <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/ES.png" alt="">
-  <figcaption class="image-caption">Source: https://en.wikipedia.org/wiki/CMA-ES. Image based on work by Nikolaus Hansen and others.
+  <figcaption class="image-caption" style="font-size:11px">Source: https://en.wikipedia.org/wiki/CMA-ES. Image based on work by Nikolaus Hansen and others.
   The spherical optimization landscape is depicted with solid lines of equal $f$-values. In this simple example, the population (dots) concentrates over the global optimum after few iterations.
 </figcaption>
 </figure>
+
 
 #### Python Implementation from scratch
 
@@ -236,7 +237,7 @@ def optimize(model,x,y,
                error_weight - Contribution of error for considering new population
                decay_rate - Rate at which the weight of the error will reduce after each iteration,
                             so that we don't deviate away at the point of convergence. 
-                            It controls the balance between exploration and exploitation.\n
+                            It controls the balance between exploration and exploitation
                             
      
      
