@@ -2,7 +2,7 @@
 layout:     post
 title:      "Introduction to Evolution Strategy"
 subtitle:   "Training Neural Network without Backpropagation using Evolution Strategy"
-date:       2020-04-04 12:00:00
+date:       2020-04-24 12:00:00
 author:     "Abhijeet Biswas"
 header-img: "img/giraffe_wallpaper.jpg"
 ---
