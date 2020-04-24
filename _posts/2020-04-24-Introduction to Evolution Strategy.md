@@ -6,9 +6,6 @@ date:       2020-04-24 12:00:00
 author:     "Abhijeet Biswas"
 header-img: "img/giraffe_wallpaper.jpg"
 ---
-# Introduction to Evolution Strategy
-
-### 
 
 In this post we will look into how we can train any model using Evolution Strategies (ES) and various advantages of it. We will then build a simple neural network from scratch in Python (by only using numpy) and train it on MNIST Handwritten Digit dataset using one of the ES algorithms called Cross-Entroy method. This simple implementation will help us understand the concept better and apply it to other settings. Let's get started!
 
@@ -21,13 +18,10 @@ In this post we will look into how we can train any model using Evolution Strate
 #### Numerical Optimization
 
 Almost every machine learning algorithm can be posed as an optimization problem. In an ML algorithm, we update the model's parameters to minimize the loss. For example, every supervised learning algorithm can be written as, $\hat{\theta} = \underset{\theta}{\arg\min} \mathbb {E}\_{x,y}[L(y,f(x,\theta))]$, where $x$ and$y$ represent the features and the target respectively, $f$ represents the function we are trying to model and $L$ represents the Loss function, which measures how good our fit is. Gradient Descent algorithm also known as steepest descent has proven to solve such problems well in most of the cases.  It is a first-order iterative algorithm for finding the local minimum of a differentiable function. We take steps proportional to the negative of the gradient of the Loss function at the current point, i.e. 
- $\theta\_{new} = \theta\_{old} - \alpha*\nabla\_{\theta} L(y, f(x, \theta\_{old}))$. Newton's Method is another second-order iterative method which converges in fewer iterations but is computationally expensive as the inverse of second-order derivative of the loss function (Hessian matrix) needs to be calculated, i.e. $\theta\_{new} = \theta\_{old} - [\nabla\_{\theta}^2 L(y, f(x, \theta\_{old}))]^{-1}*\nabla\_{\theta} L(y, f(x, \theta\_{old}))$. We are searching for parameter using the gradients as we believe that it will lead us in the direction where loss will get reduced. But can we search for optimal parameters without calculating any gradients? Actually, there are many ways to solve this problem! There are bunch of different Derivitive-free optimization algorithms (also known as Black-Box optimization).
+ $\theta\_{new} = \theta\_{old} - \alpha*\nabla\_{\theta} L(y, f(x, \theta\_{old}))$. Newton's Method is another second-order iterative method which converges in fewer iterations but is computationally expensive as the inverse of second-order derivative of the loss function (Hessian matrix) needs to be calculated, i.e. $\theta\_{new} = \theta\_{old} - [\nabla\_{\theta}^2 L(y, f(x, \theta\_{old}))]^{-1}\*\nabla\_{\theta} L(y, f(x, \theta\_{old}))$. We are searching for parameter using the gradients as we believe that it will lead us in the direction where loss will get reduced. But can we search for optimal parameters without calculating any gradients? Actually, there are many ways to solve this problem! There are bunch of different Derivitive-free optimization algorithms (also known as Black-Box optimization).
  
- <figure>
-  <img class="image" width="100%" src="{{ site.baseurl }}/img/gradient descent.png" alt="">
-  <figcaption class="image-caption">{{ include.caption }}</figcaption>
-</figure>
-
+ <img class="image" width="100%" src="{{ site.baseurl }}/img/gradient descent.png" alt="">
+ 
 #### Evolution Strategies
 
 Gradient descent might not always solve our problems. Why? The answer is local optimum in short. For example in case of sparse reward scenarios in reinforcement learning where agent receives reward at the end of episode, like in chess with end reward as +1 or -1 for winning or lossing the game respectively. We won't know whether we played horribly or just made a small mistake. The reward gradient signal is largely uninformative and can get us stuck. Rather than using noisy gradients to update our parameters we can resort to derivative-free techniques such as Evolution Strategies (ES). 
@@ -37,7 +31,6 @@ ES are nature-inspired  derivative-free optimization methods which use random mu
 In ES, we don't care much about the function and its relationship with the inputs or parameters. Some million numbers (parameters of the model) go into the algorithm and it spits out 1 value (eg. loss in supervised setting; reward in case of Reinforcement Learning). We try to find the best set of such numbers which returns good values for our optimization problem. We are optimizing a function $J(\theta)$ with respect to the parameters $\theta$, just by evaluating it without making any assumptions about the structure of $J$, and hence the name 'black-box optimization'. 
 
 In this [paper](https://arxiv.org/abs/1703.03864) by OpenAI, they show that ES is easier to implement and scale in a distributed computational environment, it does not suffer in case of sparse rewards and has fewer hyperparameters. Moreover, they found out that ES discovered more diverse policies compared to traditional RL algorithm. 
-
 
 #### Vanilla Implementation details
 
@@ -189,16 +182,16 @@ class Model():
     
     def evaluate(self, x, y, weights = None):
     
-    """
-    
-    Arguments : x - numpy array of shape (batch size,number of features),
-                y - numpy array of shape (batch size,number of classes),
-                weights - numpy array containing the parameters of the model
-                
-    Returns : The mean of the categorical cross-entropy loss
-                
-    
-    """
+        """
+
+        Arguments : x - numpy array of shape (batch size,number of features),
+                    y - numpy array of shape (batch size,number of classes),
+                    weights - numpy array containing the parameters of the model
+
+        Returns : The mean of the categorical cross-entropy loss
+
+
+        """
         
         if weights is not None:
             
@@ -211,6 +204,7 @@ class Model():
         
         return (log_predicted_y*y).mean()
     
+    
 ```
 
 
@@ -218,7 +212,7 @@ We will now define our function which will take a model as input and update its 
 
 ```python
 def optimize(model,x,y,
-             top_n = 5, n_pop = 20, n_iter = 10,,
+             top_n = 5, n_pop = 20, n_iter = 10,
              sigma_error = 1, error_weight = 1,  decay_rate = 0.95,
              min_error_weight = 0.01 ):
                          
