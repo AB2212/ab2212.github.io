@@ -45,7 +45,7 @@ plugins:
 analytics :
   provider : google
   google:
-    tracking_id : 'XXXX'
+    tracking_id : 'UA-164494745-1'
   getclicky :
     site_id
     
