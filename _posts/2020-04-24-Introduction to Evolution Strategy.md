@@ -225,7 +225,7 @@ def optimize(model,x,y,
              min_error_weight = 0.01 ):
                          
     '''
-    Aruments : model - Model object(single layer neural network here),
+    Arguments : model - Model object(single layer neural network here),
                x - numpy array of shape (batch size, number of features),
                y - numpy array of shape (batch size, number of classes),
                top_n - Number of elite parameters to consider for calculating the
@@ -236,7 +236,7 @@ def optimize(model,x,y,
                error_weight - Contribution of error for considering new population
                decay_rate - Rate at which the weight of the error will reduce after each iteration,
                             so that we don't deviate away at the point of convergence. 
-                            It controls the balance between exploration and exploitation.
+                            It controls the balance between exploration and exploitation.\n
                             
      
      
