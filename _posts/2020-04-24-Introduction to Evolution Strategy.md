@@ -115,13 +115,13 @@ We will start by defining our model, which will be a single layer neural network
 
 def soft_max(x):
 
-    """
+   '''
     Arguments: numpy array
     
     returns: numpy array after applying 
              softmax function to each
              element
-    """
+    '''
     
     # Subtracting x from max for numerical stability
    
@@ -132,10 +132,10 @@ def soft_max(x):
 
 class Model():
 
-    """
+    '''
     Single layer Neural Network
     
-    """
+    '''
     
     def __init__(self, input_shape, n_classes):
         
@@ -149,7 +149,7 @@ class Model():
         
     def forward(self,x):
     
-        """
+        '''
         Arguments: numpy array containing the features,
                    expected shape of input  array is
                    (batch size, number of features)
@@ -159,12 +159,14 @@ class Model():
                  expected shape of output array is
                  (batch size, number of classes)
         
-        """
+        '''
         
         # Multiplying weights with inputs
+        
         x = np.dot(x,self.weights)
         
         # Applying softmax function on each row
+        
         x = np.apply_along_axis(soft_max, 1, x)
         
         return x
@@ -172,7 +174,7 @@ class Model():
     
     def __call__(self,x):
     
-        """
+        '''
         This dunder function
         enables your model to be callable
          
@@ -180,14 +182,14 @@ class Model():
         When the model is called using model(x),
         forward method of the model is called internally
         
-        """
+        '''
         
         return self.forward(x)
     
     
     def evaluate(self, x, y, weights = None):
     
-        """
+        '''
 
         Arguments : x - numpy array of shape (batch size,number of features),
                     y - numpy array of shape (batch size,number of classes),
@@ -197,7 +199,7 @@ class Model():
         Returns : The mean of the categorical cross-entropy loss
 
 
-        """
+        '''
         
         if weights is not None:
             
@@ -222,7 +224,7 @@ def optimize(model,x,y,
              sigma_error = 1, error_weight = 1,  decay_rate = 0.95,
              min_error_weight = 0.01 ):
                          
-    """
+    '''
     Aruments : model - Model object(single layer neural network here),
                x - numpy array of shape (batch size, number of features),
                y - numpy array of shape (batch size, number of classes),
@@ -240,7 +242,7 @@ def optimize(model,x,y,
      
     Returns : Model object with updated parameters/weights
                
-    """
+    '''
     
     # Model weights have been randomly initialized at first
     
@@ -310,7 +312,7 @@ with open('model.pickle','wb') as f:
 
 #### Ending note
 
-ES are very simple to implement and don't require gradients. Just by injecting noise into our parameters we are able to search for the best parameters. Even though we have solved it for a supervised problem for the ease of understanding, it is more suited for Reinforcement learning scenarios where one has to estimate the gradient of the expected reward by sampling. 
+ES are very simple to implement and don't require gradients. Just by injecting noise into our parameters we are able to search the parameter space. Even though we have solved it for a supervised problem for the ease of understanding, it is more suited for Reinforcement learning scenarios where one has to estimate the gradient of the expected reward by sampling. 
 
 **References and further reading**:
 
