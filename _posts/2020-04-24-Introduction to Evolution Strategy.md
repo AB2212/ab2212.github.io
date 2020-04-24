@@ -70,7 +70,6 @@ Let's go through a simple example in Python to get a better understanding. We wi
 
 ```python 
 # Importing all the required libraries
-
 import numpy as np
 import matplotlib.pyplot as plt
 import tqdm
@@ -80,29 +79,24 @@ warnings.filterwarnings('ignore')
 from keras.datasets import mnist
 
 # Machine Epsilon (needed to calculate logarithms)
-
 eps = (np.finfo(np.float64).eps) 
 
 # Loading MNIST dataset
-
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 # x contains the images (features to our model)
 # y contains the labels 0 to 9
 
 # Normalizing the inputs between 0 and 1
-
 x_train = x_train/255
 x_test = x_test/255
 
 # Flattening the image as we are using 
 # dense neural networks
-
 x_train = x_train.reshape( -1, x_train.shape[1]*x_train.shape[2])
 x_test = x_test.reshape( -1, x_test.shape[1]*x_test.shape[2])
 
 # Converting to one-hot representation
-
 identity_matrix = np.eye(self.n_classes) 
 y_train = identity_matrix[y_train]
 y_test = identity_matrix[y_test]
@@ -127,8 +121,7 @@ def soft_max(x):
              element
     '''
     
-    # Subtracting x from max for numerical stability
-   
+    # Subtracting max from x for numerical stabilit
     e_x = np.exp(x - np.max(x))
     
     return e_x /e_x.sum()
@@ -144,11 +137,9 @@ class Model():
     def __init__(self, input_shape, n_classes):
         
         # Number of output classes
-        
         self.n_classes = n_classes
         
         # Parameters/Weights of our network which we will be updating
-         
         self.weights = np.random.randn(input_shape, n_classes)
         
     def forward(self,x):
@@ -166,11 +157,9 @@ class Model():
         '''
         
         # Multiplying weights with inputs
-        
         x = np.dot(x,self.weights)
         
         # Applying softmax function on each row
-        
         x = np.apply_along_axis(soft_max, 1, x)
         
         return x
@@ -211,7 +200,6 @@ class Model():
         
         
         # Calculating the cross-entropy loss
-        
         log_predicted_y = np.log(self.forward(x) + eps)
         
         return (log_predicted_y*y).mean()
@@ -251,13 +239,11 @@ def optimize(model,x,y,
     '''
     
     # Model weights have been randomly initialized at first
-    
     best_weights = model.weights
     
     for i in range(n_iter):
         
         # Generating the population of parameters
-        
         pop_weights = [best_weights + error_weight*sigma_error* \
                        np.random.randn(*model.weights.shape)
                        
@@ -265,11 +251,9 @@ def optimize(model,x,y,
         
         
         # Evaluating the population of parameters
-        
         evaluation_values = [model.evaluate(x,y,weight) for weight in pop_weights]
         
         # Sorting based on evaluation score
-        
         weight_eval_list = zip(evaluation_values, pop_weights)
         
         weight_eval_list = sorted(weight_eval_list, key = lambda x: x[0], reverse = True)
@@ -277,11 +261,9 @@ def optimize(model,x,y,
         evaluation_values, pop_weights = zip(*weight_eval_list)
         
         # Taking the mean of the elite parameters
-        
         best_weights = np.stack(pop_weights[:top_n], axis=0).mean(axis=0)
         
         #Decaying the weight
-         
         error_weight = max(error_weight*decay_rate, min_error_weight)
         
     model.weights = best_weights
@@ -289,14 +271,12 @@ def optimize(model,x,y,
     return model
 
 # Instantiating our model object
-
 model = Model(input_shape= x_train.shape[-1], n_classes= 10)
 
 print("Evaluation on training data", model.evaluate(x_train, y_train))
 
 
 # Running it for 100 steps
-
 for i in tqdm.tqdm(range(100)):
     
     model = optimize(model, 
@@ -310,7 +290,6 @@ for i in tqdm.tqdm(range(100)):
     print("Test Accuracy: ",(np.argmax(model(x_test),axis=1) == y_test).mean())
     
 # Saving the model for later use
-
 with open('model.pickle','wb') as f:
     pickle.dump(model,f)
 ```
