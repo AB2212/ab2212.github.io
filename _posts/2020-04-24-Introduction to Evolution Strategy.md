@@ -22,6 +22,8 @@ Almost every machine learning algorithm can be posed as an optimization problem.
  
  <img class="image" width="100%" src="{{ site.baseurl }}/img/gradient descent.png" alt="">
  
+<p> </p>
+
 #### Evolution Strategies
 
 Gradient descent might not always solve our problems. Why? The answer is local optimum in short. For example in case of sparse reward scenarios in reinforcement learning where agent receives reward at the end of episode, like in chess with end reward as +1 or -1 for winning or lossing the game respectively. We won't know whether we played horribly or just made a small mistake. The reward gradient signal is largely uninformative and can get us stuck. Rather than using noisy gradients to update our parameters we can resort to derivative-free techniques such as Evolution Strategies (ES). 
@@ -43,8 +45,9 @@ Thinking in terms of natural selection, we are creating a population of paramete
   <figcaption class="image-caption" style="font-size:11px">Source: adapted from Lur thematic encyclopedia, via Wikimedia Commons </figcaption>
 </figure>
 
+<p> </p>
 
-Pseudo Code:
+**Pseudo Code**:
 
 1. Randomly initialize the best parameter using a gaussian distribution
 2. Loop untill convergence:
@@ -59,13 +62,13 @@ Pseudo Code:
 </figcaption>
 </figure>
 
+<p> </p>
 
 #### Python Implementation from scratch
 
 Let's go through a simple example in Python to get a better understanding. We will start by loading the required libraries and our MNIST Handwritten digit dataset.
 
 ```python 
-
 # Importing all the required libraries
 
 import numpy as np
@@ -119,7 +122,7 @@ def soft_max(x):
    '''
     Arguments: numpy array
     
-    returns: numpy array after applying 
+    Returns: numpy array after applying 
              softmax function to each
              element
     '''
@@ -233,11 +236,13 @@ def optimize(model,x,y,
                        best parameter by taking mean
                n_pop - Population size of the parameters
                n_iter - Number of iteration 
-               sigma_error - The standard deviation of errors while creating population from best parameter
+               sigma_error - The standard deviation of errors while creating 
+                              population from best parameter
                error_weight - Contribution of error for considering new population
-               decay_rate - Rate at which the weight of the error will reduce after each iteration,
-                            so that we don't deviate away at the point of convergence. 
-                            It controls the balance between exploration and exploitation
+               decay_rate - Rate at which the weight of the error will reduce after 
+                            each iteration, so that we don't deviate away at the 
+                            point of convergence. It controls the balance between 
+                            exploration and exploitation
                             
      
      
