@@ -26,19 +26,20 @@ Almost every machine learning algorithm can be posed as an optimization problem.
 
 #### Evolution Strategies
 
-Gradient descent might not always solve our problems. Why? The answer is local optimum in short. For example in case of sparse reward scenarios in reinforcement learning where agent receives reward at the end of episode, like in chess with end reward as +1 or -1 for winning or lossing the game respectively. We won't know whether we played horribly or just made a small mistake. The reward gradient signal is largely uninformative and can get us stuck. Rather than using noisy gradients to update our parameters we can resort to derivative-free techniques such as Evolution Strategies (ES). 
-
-ES are nature-inspired  derivative-free optimization methods which use random mutation, recombination, and selection applied to a population of individuals containing candidate solutions in order to evolve iteratively better and better solutions for non-linear or non-convex continuous optimization problems. 
-
-In ES, we don't care much about the function and its relationship with the inputs or parameters. Some million numbers (parameters of the model) go into the algorithm and it spits out 1 value (eg. loss in supervised setting; reward in case of Reinforcement Learning). We try to find the best set of such numbers which returns good values for our optimization problem. We are optimizing a function $J(\theta)$ with respect to the parameters $\theta$, just by evaluating it without making any assumptions about the structure of $J$, and hence the name 'black-box optimization'. 
+Gradient descent might not always solve our problems. Why? The answer is local optimum in short. For example in case of sparse reward scenarios in reinforcement learning where agent receives reward at the end of episode, like in chess with end reward as +1 or -1 for winning or lossing the game respectively. In case we lose the game, we won't know whether we played horribly wrong or just made a small mistake. The reward gradient signal is largely uninformative and can get us stuck. Rather than using noisy gradients to update our parameters we can resort to derivative-free techniques such as Evolution Strategies (ES). 
 
 In this [paper](https://arxiv.org/abs/1703.03864) by OpenAI, they show that ES is easier to implement and scale in a distributed computational environment, it does not suffer in case of sparse rewards and has fewer hyperparameters. Moreover, they found out that ES discovered more diverse policies compared to traditional RL algorithm. 
 
-#### Vanilla Implementation details
+ES are nature-inspired optimization methods which use random mutation, recombination, and selection applied to a population of individuals containing candidate solutions in order to evolve iteratively better solutions. It is really useful for non-linear or non-convex continuous optimization problems. 
+
+In ES, we don't care much about the function and its relationship with the inputs or parameters. Some million numbers (parameters of the model) go into the algorithm and it spits out 1 value (eg. loss in supervised setting; reward in case of Reinforcement Learning). We try to find the best set of such numbers which returns good values for our optimization problem. We are optimizing a function $J(\theta)$ with respect to the parameters $\theta$, just by evaluating it without making any assumptions about the structure of $J$, and hence the name 'black-box optimization'. Let's deep dig into the implementation details!
+
+
+#### Vanilla Implementation 
 
 To start with, we randomly generate the parameters and tweak it such that the parameters work better slightly. Mathematically, at each step we take a parameter vector $\theta$ and generate a population of, say, 100 slightly different parameter vectors $\theta\_1$ ... $\theta\_{100}$ by jittering $\theta$ with gaussian noise. We then evaluate each one of the 100 candidates independently by running the model and based on the output value evaluate the loss or the objective function. We then select best top N best performing elite parameters, N can be say 10, and take the mean of these parameters and call it our best parameter so far. We then repeat the above process by again generating 100 different parameters by adding gaussian noise to our best parameter obtained so far. 
 
-Thinking in terms of natural selection, we are creating a population of parameters (species) randomly and selecting the top parameters that perfrom well based on our objective function. We then take combine the best qualities of these parameters by taking their mean and call it our best parameter. We then recreate the population by mutating this parameter by adding random noise and repeat the whole process till convergence. 
+Thinking in terms of natural selection, we are creating a population of parameters (species) randomly and selecting the top parameters that perfrom well based on our objective function (also known as fitness function). We then take combine the best qualities of these parameters by taking their mean (this is a crude way but it still works!) and call it our best parameter. We then recreate the population by mutating this parameter by adding random noise and repeat the whole process till convergence. 
 
  <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/giraffe.png" alt="">
@@ -51,9 +52,10 @@ Thinking in terms of natural selection, we are creating a population of paramete
 
 1. Randomly initialize the best parameter using a gaussian distribution
 2. Loop untill convergence:
-    - Create population of parameters $\theta\_1,...\theta\_{100}$ by adding gaussian noise to the best parameter (decay the noise as we keep reaching better performance to encourage exploitation) 
+    - Create population of parameters $\theta\_1,...\theta\_{100}$ by adding gaussian noise to the best parameter 
     - Evaluate the objective function for all the parameters and select the top N best performing parameters (elite parameters)
     - Best parameter = Mean(top N elite parameters)
+    - Decay the noise at the end of each iteration by some factor (At the start more noise will help us to explore better but as we reach the convergence point we want the noise to be minimum so as to not deviate away) 
 <p> </p>
 <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/ES.png" alt="">
@@ -66,7 +68,7 @@ Thinking in terms of natural selection, we are creating a population of paramete
 
 #### Python Implementation from scratch
 
-Let's go through a simple example in Python to get a better understanding. We will start by loading the required libraries and the MNIST Handwritten digit dataset.
+Let's go through a simple example in Python to get a better understanding. I tried to add details related to numerical stability as well for few of the things. Please read the comments! We will start by loading the required libraries and the MNIST Handwritten digit dataset.
 
 ```python 
 # Importing all the required libraries
@@ -79,7 +81,7 @@ warnings.filterwarnings('ignore')
 from keras.datasets import mnist
 
 # Machine Epsilon (needed to calculate logarithms)
-eps = (np.finfo(np.float64).eps) 
+eps = np.finfo(np.float64).eps
 
 # Loading MNIST dataset
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -101,6 +103,16 @@ identity_matrix = np.eye(self.n_classes)
 y_train = identity_matrix[y_train]
 y_test = identity_matrix[y_test]
 
+# Plotting the images
+fig, ax = plt.subplots(2,5)
+for i, ax in enumerate(ax.flatten()):
+    im_idx = np.argwhere(y_train == i)[0]
+    plottable_image = np.reshape(x_train[im_idx], (28, 28))
+    ax.set_axis_off()
+    ax.imshow(plottable_image, cmap='gray')
+    
+plt.savefig('mnist.jpg')
+
 ```
 This is how the images look like,
 <img class="image" width="100%" src="{{ site.baseurl }}/img/mnist.jpg" alt="">
@@ -121,7 +133,12 @@ def soft_max(x):
              element
     '''
     
-    # Subtracting max from x for numerical stabilit
+    # Subtracting max of x from each x for numerical stability,
+    # as this results in the largest argument to exp being 0
+    # ruling out the possibility of overﬂow
+    # Read more about it at :
+    # https://www.deeplearningbook.org/contents/numerical.html
+    
     e_x = np.exp(x - np.max(x))
     
     return e_x /e_x.sum()
@@ -189,7 +206,8 @@ class Model():
                     weights - numpy array containing the parameters of the model
          
          
-        Returns : The mean of the categorical cross-entropy loss
+        Returns : Scalar containing the mean of the categorical cross-entropy loss
+                  of the batch
 
 
         '''
@@ -200,6 +218,8 @@ class Model():
         
         
         # Calculating the cross-entropy loss
+        # Adding a small value called epsilon 
+        # to prevent -inf in the output
         log_predicted_y = np.log(self.forward(x) + eps)
         
         return (log_predicted_y*y).mean()
@@ -302,7 +322,5 @@ ES are very simple to implement and don't require gradients. Just by injecting n
 **References and further reading**:
 
 [OpenAI Blog post](https://openai.com/blog/evolution-strategies/)
-
 [Otoro's blog](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/)
-
-[Lilian's Blog](https://lilianweng.github.io/lil-log/2019/09/05/evolution-strategies.html)
+[Lilian's blog](https://lilianweng.github.io/lil-log/2019/09/05/evolution-strategies.html)
