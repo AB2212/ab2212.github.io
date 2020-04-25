@@ -217,9 +217,11 @@ class Model():
             self.weights = weights
         
         
-        # Calculating the cross-entropy loss
+        # Calculating the negative of cross-entropy loss (since
+        # we are maximizing this score)
         # Adding a small value called epsilon 
         # to prevent -inf in the output
+        # 
         log_predicted_y = np.log(self.forward(x) + eps)
         
         return (log_predicted_y*y).mean()
@@ -306,7 +308,7 @@ for i in tqdm.tqdm(range(200)):
                      n_pop = 100,
                      n_iter = 1)
     
-    print("Test data cross-entropy loss: ", model.evaluate(x_test, y_test))
+    print("Test data cross-entropy loss: ", -1*model.evaluate(x_test, y_test))
     print("Test Accuracy: ",(np.argmax(model(x_test),axis=1) == y_test).mean())
     
 # Saving the model for later use
