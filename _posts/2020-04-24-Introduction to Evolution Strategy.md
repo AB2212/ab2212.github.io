@@ -32,7 +32,7 @@ In this [paper](https://arxiv.org/abs/1703.03864) by OpenAI, they show that ES i
 
 ES are nature-inspired optimization methods which use random mutation, recombination, and selection applied to a population of individuals containing candidate solutions in order to evolve iteratively better solutions. It is really useful for non-linear or non-convex continuous optimization problems. 
 
-In ES, we don't care much about the function and its relationship with the inputs or parameters. Some million numbers (parameters of the model) go into the algorithm and it spits out 1 value (eg. loss in supervised setting; reward in case of Reinforcement Learning). We try to find the best set of such numbers which returns good values for our optimization problem. We are optimizing a function $J(\theta)$ with respect to the parameters $\theta$, just by evaluating it without making any assumptions about the structure of $J$, and hence the name 'black-box optimization'. Let's deep dig into the implementation details!
+In ES, we don't care much about the function and its relationship with the inputs or parameters. Some million numbers (parameters of the model) go into the algorithm and it spits out 1 value (eg. loss in supervised setting; reward in case of Reinforcement Learning). We try to find the best set of such numbers which returns good values for our optimization problem. We are optimizing a function $J(\theta)$ with respect to the parameters $\theta$, just by evaluating it without making any assumptions about the structure of $J$, and hence the name 'black-box optimization'. Let's dig deep into the implementation details!
 
 
 #### Vanilla Implementation 
