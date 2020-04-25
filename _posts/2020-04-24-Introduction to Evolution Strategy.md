@@ -322,5 +322,7 @@ ES are very simple to implement and don't require gradients. Just by injecting n
 **References and further reading**:
 
 [OpenAI Blog post](https://openai.com/blog/evolution-strategies/)
+
 [Otoro's blog](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/)
+
 [Lilian's blog](https://lilianweng.github.io/lil-log/2019/09/05/evolution-strategies.html)
