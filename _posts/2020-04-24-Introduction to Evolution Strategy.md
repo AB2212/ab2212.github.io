@@ -99,7 +99,7 @@ x_train = x_train.reshape( -1, x_train.shape[1]*x_train.shape[2])
 x_test = x_test.reshape( -1, x_test.shape[1]*x_test.shape[2])
 
 # Converting to one-hot representation
-identity_matrix = np.eye(self.n_classes) 
+identity_matrix = np.eye(10) 
 y_train = identity_matrix[y_train]
 y_test = identity_matrix[y_test]
 
