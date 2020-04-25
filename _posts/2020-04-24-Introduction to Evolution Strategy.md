@@ -7,7 +7,7 @@ author:     "Abhijeet Biswas"
 header-img: "img/giraffe_wallpaper.jpg"
 ---
 
-In this post we will look into how we can train any model using Evolution Strategies (ES) and various advantages of it. We will then build a simple neural network from scratch in Python (by only using numpy) and train it on MNIST Handwritten Digit dataset using one of the ES algorithms called Cross-Entroy method. This simple implementation will help us understand the concept better and apply it to other settings. Let's get started!
+In this post we will look into how we can train any model using Evolution Strategies (ES) and various advantages of it. We will then build a simple neural network from scratch in Python (by only using numpy) and train it on MNIST Handwritten Digit dataset using ES. This simple implementation will help us understand the concept better and apply it to other settings. Let's get started!
 
 **Table of Content**
 1. TOC
@@ -286,7 +286,7 @@ for i in tqdm.tqdm(range(100)):
                      n_pop = 100,
                      n_iter = 1)
     
-    print("Test data cross-entropy: ", model.evaluate(x_test, y_test))
+    print("Test data cross-entropy loss: ", model.evaluate(x_test, y_test))
     print("Test Accuracy: ",(np.argmax(model(x_test),axis=1) == y_test).mean())
     
 # Saving the model for later use
