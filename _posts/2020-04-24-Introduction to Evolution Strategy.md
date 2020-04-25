@@ -26,7 +26,7 @@ Almost every machine learning algorithm can be posed as an optimization problem.
 
 #### Evolution Strategies
 
-Gradient descent might not always solve our problems. Why? The answer is local optimum in short. For example in case of sparse reward scenarios in reinforcement learning where agent receives reward at the end of episode, like in chess with end reward as +1 or -1 for winning or lossing the game respectively. In case we lose the game, we won't know whether we played horribly wrong or just made a small mistake. The reward gradient signal is largely uninformative and can get us stuck. Rather than using noisy gradients to update our parameters we can resort to derivative-free techniques such as Evolution Strategies (ES). 
+Gradient descent might not always solve our problems. Why? The answer is local optimum in short. For example in case of sparse reward scenarios in reinforcement learning where agent receives reward at the end of episode, like in chess with end reward as +1 or -1 for winning or losing the game respectively. In case we lose the game, we won't know whether we played horribly wrong or just made a small mistake. The reward gradient signal is largely uninformative and can get us stuck. Rather than using noisy gradients to update our parameters we can resort to derivative-free techniques such as Evolution Strategies (ES). 
 
 In this [paper](https://arxiv.org/abs/1703.03864) by OpenAI, they show that ES is easier to implement and scale in a distributed computational environment, it does not suffer in case of sparse rewards and has fewer hyperparameters. Moreover, they found out that ES discovered more diverse policies compared to traditional RL algorithm. 
 
