@@ -133,9 +133,9 @@ def soft_max(x):
              element
     '''
     
-    # Subtracting max of x from each x for numerical stability,
-    # as this results in the largest argument to exp being 0
-    # ruling out the possibility of overﬂow
+    # Subtracting max of x from each element of x for numerical
+    # stability as this results in the largest argument to 
+    # exp being 0, ruling out the possibility of overﬂow
     # Read more about it at :
     # https://www.deeplearningbook.org/contents/numerical.html
     
