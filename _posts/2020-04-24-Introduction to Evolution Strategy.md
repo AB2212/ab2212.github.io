@@ -317,7 +317,7 @@ with open('model.pickle','wb') as f:
 
 #### Ending note
 
-ES are very simple to implement and don't require gradients. Just by injecting noise into our parameters we are able to search the parameter space. Even though we have solved it for a supervised problem for the ease of understanding, it is more suited for Reinforcement learning scenarios where one has to estimate the gradient of the expected reward by sampling. 
+ES are very simple to implement and don't require gradients. Just by injecting noise into our parameters we are able to search the parameter space. Even though we have solved it for a supervised problem for the ease of understanding, it is more suited for Reinforcement learning scenarios where one has to estimate the gradient of the expected reward by sampling. Hope you enjoyed reading this post!
 
 **References and further reading**:
 
