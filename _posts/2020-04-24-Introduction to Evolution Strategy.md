@@ -4,7 +4,7 @@ title:      "Introduction to Evolution Strategy"
 subtitle:   "Training Neural Network without Backpropagation using Evolution Strategy"
 date:       2020-04-24 12:00:00
 author:     "Abhijeet Biswas"
-header-img: "img/giraffe_wallpaper.jpg"
+header-img: "img/es_wallpaper.jpg"
 ---
 
 In this post we will look into how we can train any model using Evolution Strategies (ES) and various advantages of it. We will then build a simple neural network from scratch in Python (by only using numpy) and train it on MNIST Handwritten Digit dataset using ES. This simple implementation will help us understand the concept better and apply it to other settings. Let's get started!
