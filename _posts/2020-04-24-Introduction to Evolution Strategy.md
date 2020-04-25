@@ -90,8 +90,8 @@ eps = np.finfo(np.float64).eps
 # y contains the labels 0 to 9
 
 # Normalizing the inputs between 0 and 1
-x_train = x_train/255
-x_test = x_test/255
+x_train = x_train/255.
+x_test = x_test/255.
 
 # Flattening the image as we are using 
 # dense neural networks
