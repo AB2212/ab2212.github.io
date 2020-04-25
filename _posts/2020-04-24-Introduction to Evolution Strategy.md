@@ -296,8 +296,8 @@ model = Model(input_shape= x_train.shape[-1], n_classes= 10)
 print("Evaluation on training data", model.evaluate(x_train, y_train))
 
 
-# Running it for 100 steps
-for i in tqdm.tqdm(range(100)):
+# Running it for 200 steps
+for i in tqdm.tqdm(range(200)):
     
     model = optimize(model, 
                      x_train,
