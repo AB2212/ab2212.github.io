@@ -17,7 +17,7 @@ In this post we will look into how we can train any model using Evolution Strate
 
 #### Numerical Optimization
 
-Almost every machine learning algorithm can be posed as an optimization problem. In an ML algorithm, we update the model's parameters to minimize the loss. For example, every supervised learning algorithm can be written as, $\hat{\theta} = \underset{\theta}{\arg\min} \mathbb {E}\_{x,y}[L(y,f(x,\theta))]$, where $x$ and$y$ represent the features and the target respectively, $f$ represents the function we are trying to model and $L$ represents the Loss function, which measures how good our fit is. Gradient Descent algorithm also known as steepest descent has proven to solve such problems well in most of the cases.  It is a first-order iterative algorithm for finding the local minimum of a differentiable function. We take steps proportional to the negative of the gradient of the Loss function at the current point, i.e. 
+Almost every machine learning algorithm can be posed as an optimization problem. In an ML algorithm, we update the model's parameters to minimize the loss. For example, every supervised learning algorithm can be written as, $\hat{\theta} = \underset{\theta}{\arg\min} \mathbb {E}\_{x,y}[L(y,f(x,\theta))]$, where $x$ and$y$ represent the features and the target respectively, $f$ represents the function we are trying to model,$\theta$ represents model parameters and $L$ represents the Loss function, which measures how good our fit is. Gradient Descent algorithm also known as steepest descent has proven to solve such problems well in most of the cases.  It is a first-order iterative algorithm for finding the local minimum of a differentiable function. We take steps proportional to the negative of the gradient of the Loss function at the current point, i.e. 
  $\theta\_{new} = \theta\_{old} - \alpha*\nabla\_{\theta} L(y, f(x, \theta\_{old}))$. Newton's Method is another second-order iterative method which converges in fewer iterations but is computationally expensive as the inverse of second-order derivative of the loss function (Hessian matrix) needs to be calculated, i.e. $\theta\_{new} = \theta\_{old} - [\nabla\_{\theta}^2 L(y, f(x, \theta\_{old}))]^{-1}\*\nabla\_{\theta} L(y, f(x, \theta\_{old}))$. We are searching for parameter using the gradients as we believe that it will lead us in the direction where loss will get reduced. But can we search for optimal parameters without calculating any gradients? Actually, there are many ways to solve this problem! There are bunch of different Derivitive-free optimization algorithms (also known as Black-Box optimization).
  
  <img class="image" width="100%" src="{{ site.baseurl }}/img/gradient descent.png" alt="">
@@ -37,7 +37,7 @@ In ES, we don't care much about the function and its relationship with the input
 
 #### Vanilla Implementation 
 
-To start with, we randomly generate the parameters and tweak it such that the parameters work better slightly. Mathematically, at each step we take a parameter vector $\theta$ and generate a population of, say, 100 slightly different parameter vectors $\theta\_1$ ... $\theta\_{100}$ by jittering $\theta$ with gaussian noise. We then evaluate each one of the 100 candidates independently by running the model and based on the output value evaluate the loss or the objective function. We then select best top N best performing elite parameters, N can be say 10, and take the mean of these parameters and call it our best parameter so far. We then repeat the above process by again generating 100 different parameters by adding gaussian noise to our best parameter obtained so far. 
+To start with, we randomly generate the parameters and tweak it such that the parameters work better slightly. Mathematically, at each step we take a parameter vector $\theta$ and generate a population of, say, 100 slightly different parameter vectors $\theta\_1$ ... $\theta\_{100}$ by jittering $\theta$ with gaussian noise. We then evaluate each one of the 100 candidates independently by running the model and based on the output value evaluate the loss or the objective function. We then select top N best performing elite parameters, N can be say 10, and take the mean of these parameters and call it our best parameter so far. We then repeat the above process by again generating 100 different parameters by adding gaussian noise to our best parameter obtained so far. 
 
 Thinking in terms of natural selection, we are creating a population of parameters (species) randomly and selecting the top parameters that perform well based on our objective function (also known as fitness function). We then take combine the best qualities of these parameters by taking their mean (this is a crude way but it still works!) and call it our best parameter. We then recreate the population by mutating this parameter by adding random noise and repeat the whole process till convergence. 
 
@@ -221,7 +221,7 @@ class Model():
         # we are maximizing this score)
         # Adding a small value called epsilon 
         # to prevent -inf in the output
-        # 
+        
         log_predicted_y = np.log(self.forward(x) + eps)
         
         return (log_predicted_y*y).mean()
