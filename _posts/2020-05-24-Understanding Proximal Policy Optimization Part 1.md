@@ -392,9 +392,9 @@ $$Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...| s_{0}=s,a_{0}=a]\\
 
  or we can take more steps,
 
-$$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\\
-= E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\\
-= ....$$
+$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\
+= E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\
+= ....$
 
 When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
 
