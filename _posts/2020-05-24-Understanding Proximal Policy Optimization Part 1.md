@@ -305,10 +305,10 @@ To alleviate the problem described in the last part of previous section, we will
 $\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta))(\sum_{t^\prime=t}^{T-1}\gamma^{t^{\prime}-t}r_{t}-b)]$,
 where b is the baseline. Intuitively, we want the baseline to be the average return when we are present in the state and we want to only increase (or decrease) the probability of the action if the observed return is more (or less) than the average. $\hat{A_{t}} = \sum_{t=t^{\prime}}^{T-1}\gamma^{t-t^{\prime}}r_{t} - b$, is called the advantage estimate. Interestingly, this doesn't change our gradients. We can see why by looking at the part of expected value of the gradient where b is present,
 
-$$E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}\|s_{t}) b]\\
- = E_{\tau}[\nabla_{\theta}\log p(\tau\|\theta) b]\\
- = \sum_{\tau}[p(\tau\|\theta)\frac{\nabla_{\theta}p(\tau\|\theta)}{p(\tau\|\theta)} b]\\
- = b\nabla_{\theta}\sum_{\tau}p(\tau\|\theta)\\
+$$E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t}) b]\\
+ = E_{\tau}[\nabla_{\theta}\log p(\tau|\theta) b]\\
+ = \sum_{\tau}[p(\tau|\theta)\frac{\nabla_{\theta}p(\tau|\theta)}{p(\tau|\theta)} b]\\
+ = b\nabla_{\theta}\sum_{\tau}p(\tau|\theta)\\
  =b\nabla_{\theta}1\\
  = 0$$
  
