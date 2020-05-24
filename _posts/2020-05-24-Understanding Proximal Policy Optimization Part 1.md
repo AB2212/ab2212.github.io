@@ -9,7 +9,9 @@ header-img: "img/night_sky_ppo1.jpg"
 
 In this three-part blog series, we will deep dive into the theory and implementation details behind Proximal Policy Optimization (PPO) in PyTorch. In the first part of the series, we will understand what Policy Gradient methods are; in the second part we will look into recent developments in Policy Gradient methods like Trust Regions and Clipped Surrogate Objective to understant how PPO works; in the third part we will go through the detailed implementation of PPO in Pytorch where we will teach an agent to land a rocket in gym's [Lunar Lander](https://gym.openai.com/envs/LunarLander-v2/) environment and also help a [Bipedal Walker](https://gym.openai.com/envs/BipedalWalker-v2/) learn to walk. Let's get started!
 
-<video controls  src="{{ site.baseurl }}/img/ppo_video.mp4" autoplay loop/>
+<figure>
+  <video controls  src="{{ site.baseurl }}/img/ppo_video.mp4" autoplay loop/>
+</figure>
 
 
 **Table of Content**
@@ -254,9 +256,9 @@ animate = camera.animate()
 
 HTML(animate.to_html5_video())
 ```
-
+<figure>
 <video controls  src="{{ site.baseurl }}/img/policy_gradient.mp4" autoplay loop/>
-
+</figure>
 In policy gradient method, the random variable $x$ is a whole trajectory $\tau$ which is a sequence of states, actions and rewards, i.e.,  
 
 $\tau = (s\_{0}, a\_{0}, r\_{0}, s\_{1}, a\_{1}, r\_{1}, ..., ..., s\_{T -1 }, a\_{T-1}, r\_{T-1})$,
