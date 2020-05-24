@@ -70,7 +70,7 @@ the function looks like this
 
 I have chosen an arbitrary function with one peak and some plateau region, to show that we can update the parameters of our probability density function in such a way that we get values closer to the peak (in this case 4) when we sample from this distribution. We can think of the probability density as our policy, we want to have a policy which takes actions that gives higher reward. Time to look at some code!
 
-p> </p>
+<p> </p>
 
 ```python
 #Importing Packages
