@@ -52,15 +52,10 @@ Let's try to understand this gradient expression as it will be the central idea 
 Consider a  reward function which takes a real number (e.g. agent's action) and outputs a reward value for that action. Let's define an arbitrary reward function $f$, such that $f: \mathcal{R}-> \mathcal{R}$,
 
 $f(x) = 0 $, for $ x <=0$
-
 $f(x) = 2 $, for $ 0< x <=2$
-
 $f(x) = x $, for $ 2< x <=4$
-
 $f(x) = 8 - x $, for $ 4< x <=8$
-
 $f(x) = 0 $, for $ x>8$,
-
 the function looks like this
 
 <figure>
