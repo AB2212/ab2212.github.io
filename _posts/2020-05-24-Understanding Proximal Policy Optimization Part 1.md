@@ -35,19 +35,19 @@ To understand PPO, let's first start with understanding what policy gradient met
 
 A lot of the current successes in Deep Reinforcement Learning is because of Policy gradient methods. This is an approach in reinforcement learning where we directly learn the policy to select the best action. We try to find the stochastic policy (probability of taking an action in a given state) that maximizes our expected return (sum of total future rewards with discounting factor). We collect a bunch of trajectories (sequence of states, actions and rewards) with our current policy and try to increase the probability of good trajectories/actions by updating the parameters of our policy. 
 
-We can write the parameterized policy as, $\pi(a\|s,\theta) = P(A\_{t}=a\|S\_{t} = s, \theta\_{t} = \theta)$, i.e., probability that action $a$ is taken at time $t$ given that the environment is in state $s$ at time $t$ with parameter $\theta \in \mathcal{R}^{d} $. We consider a scalar performance measure $J(\theta)$ which is the expected return given current policy i.e. $E[R\|\pi\_{\theta}]$ where $R$ is the sum of discounted future rewards $r$, $R = \sum\_{t=0}^{\infty}\gamma^{t}r\_{t}$, $\gamma$ is the discounting factor, generally it is 0.99 (discounting emphasizes recent rewards than future ones, it prevents the sum from blowing up and helps in reducing variance). We try to maximize $J(\theta)$ by updating the parameters using gradient ascent, $\theta\_{t+1} = \theta\_{t} + \alpha*\widehat{\nabla J(\theta\_{t})}$, where $\widehat{\nabla J(\theta\_{t})} \in \mathcal{R}^{d}$ is a stochastic estimate (calculated through sampling) whose expectation approximates the gradient of the performance measure with respect to its parameter $\theta$. Let's understand the math behind it by calculating the gradient of expectation $E\_{x\sim p(x\|\theta)}[f(x)]$,
+We can write the parameterized policy as, $\pi(a|s,\theta) = P(A_{t}=a|S_{t} = s, \theta_{t} = \theta)$, i.e., probability that action $a$ is taken at time $t$ given that the environment is in state $s$ at time $t$ with parameter $\theta \in \mathcal{R}^{d} $. We consider a scalar performance measure $J(\theta)$ which is the expected return given current policy i.e. $E[R|\pi_{\theta}]$ where $R$ is the sum of discounted future rewards $r$, $R = \sum_{t=0}^{\infty}\gamma^{t}r_{t}$, $\gamma$ is the discounting factor, generally it is 0.99 (discounting emphasizes recent rewards than future ones, it prevents the sum from blowing up and helps in reducing variance). We try to maximize $J(\theta)$ by updating the parameters using gradient ascent, $\theta_{t+1} = \theta_{t} + \alpha*\widehat{\nabla J(\theta_{t})}$, where $\widehat{\nabla J(\theta_{t})} \in \mathcal{R}^{d}$ is a stochastic estimate (calculated through sampling) whose expectation approximates the gradient of the performance measure with respect to its parameter $\theta$. Let's understand the math behind it by calculating the gradient of expectation $E_{x\sim p(x|\theta)}[f(x)]$,
 
-$$\nabla\_{\theta}E\_{x}[f(x)] = \nabla\_{\theta}\int p(x\|\theta) f(x)dx \\
-                             =  \int \nabla\_{\theta}p(x\|\theta) f(x)dx \\
-                             = \int p(x\|\theta)\frac{\nabla\_{\theta}p(x\|\theta)}{p(x\|\theta)} f(x)dx\\
-                             = \int p(x\|\theta)\nabla\_{\theta}\log p(x\|\theta) f(x)dx\\
-                             = E\_{x}[ f(x) \nabla\_{\theta}\log p(x\|\theta)]$$,
+$$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x|\theta) f(x)dx \\
+                             =  \int \nabla_{\theta}p(x|\theta) f(x)dx \\
+                             = \int p(x|\theta)\frac{\nabla_{\theta}p(x|\theta)}{p(x|\theta)} f(x)dx\\
+                             = \int p(x|\theta)\nabla_{\theta}\log p(x|\theta) f(x)dx\\
+                             = E_{x}[ f(x) \nabla_{\theta}\log p(x|\theta)]$$,
                              
                             
-Here we have used the fact that $\nabla\log f(x) = \frac{\nabla f(x)}{f(x)}$, this converts the integral into expectation, using which we can calculate the integral approximately through sampling. We can sample $N$ such $x\_{i}$ from $p(x\|\theta)$ and calculate $ f(x\_{i}) \nabla\_{\theta}\log p(x\_{i}\|\theta)$ for each $x\_{i}$, so the gradient of the expectation will be, $$\nabla\_{\theta}E\_{x}[f(x)] \approx  \sum\_{i=0}^{N} (f(x\_{i}) \nabla\_{\theta}\log p(x\_{i}\|\theta))/N$$
+Here we have used the fact that $\nabla\log f(x) = \frac{\nabla f(x)}{f(x)}$, this converts the integral into expectation, using which we can calculate the integral approximately through sampling. We can sample $N$ such $x_{i}$ from $p(x|\theta)$ and calculate $ f(x_{i}) \nabla_{\theta}\log p(x_{i}|\theta)$ for each $x_{i}$, so the gradient of the expectation will be, $$\nabla_{\theta}E_{x}[f(x)] \approx  \sum_{i=0}^{N} (f(x_{i}) \nabla_{\theta}\log p(x_{i}|\theta))/N$$
 This expression is valid even if the function is discontinuous and unknown, or sample space containing $x$ is a discrete set. This is the beauty of the log derivative trick and now you know why you see log in such objective functions.
 
-Let's try to understand this gradient expression as it will be the central idea behind policy gradient. The gradient, $\nabla_{\theta}\log p(x\_{i},\theta))$ is a vector which gives a direction in the parameter space of $\theta$, and  if we move in this direction we will increase the probability of observing $x\_{i}$ by changing $p(x\_{i}|\theta)$. The final gradient direction is the weighted sum of all the individual gradients (vectors) with $f(x\_{i})$ as weights, which means high value of $f(x\_{i})$ have more contribution to the final gradient vector. So the probability of observing $x\_{i}$ with higher $f(x\_{i})$ increases as they have more say in the parameter update. So after updating $\theta$, if we sample from $p(x|\theta)$ it will return $x\_{i}$ which have high $f(x\_{i})$. This will maximize the expectation $E\_{x\sim p(x|\theta)}[f(x)]$, as it roughly translates to the mean of the observed $f(x\_{i}) $. Let's consider a simple example to understand this concept better.  
+Let's try to understand this gradient expression as it will be the central idea behind policy gradient. The gradient, $\nabla_{\theta}\log p(x_{i},\theta))$ is a vector which gives a direction in the parameter space of $\theta$, and  if we move in this direction we will increase the probability of observing $x_{i}$ by changing $p(x_{i}|\theta)$. The final gradient direction is the weighted sum of all the individual gradients (vectors) with $f(x_{i})$ as weights, which means high value of $f(x_{i})$ have more contribution to the final gradient vector. So the probability of observing $x_{i}$ with higher $f(x_{i})$ increases as they have more say in the parameter update. So after updating $\theta$, if we sample from $p(x|\theta)$ it will return $x_{i}$ which have high $f(x_{i})$. This will maximize the expectation $E_{x\sim p(x|\theta)}[f(x)]$, as it roughly translates to the mean of the observed $f(x_{i}) $. Let's consider a simple example to understand this concept better.  
 
 Consider a  reward function which takes a real number (e.g. agent's action) and outputs a reward value for that action. Let's define an arbitrary reward function $f$, such that $f: \mathcal{R}-> \mathcal{R}$,
 
@@ -255,31 +255,42 @@ print('Standard Deviation:', gaussian_dist.log_std.exp().item())
 animate = camera.animate()
 
 HTML(animate.to_html5_video())
+
+#Result:
+#Initial Policy Parameters
+# Mean: 0.0
+# Standard Deviation: 2.7182817459106445
+
+# Updated Policy Parameters
+# Mean: 4.038374900817871
+# Standard Deviation: 0.08744653314352036
+
 ```
 <figure>
 <video controls  src="{{ site.baseurl }}/img/policy_gradient.mp4" autoplay loop/>
 </figure>
+
 In policy gradient method, the random variable $x$ is a whole trajectory $\tau$ which is a sequence of states, actions and rewards, i.e.,  
 
-$\tau = (s\_{0}, a\_{0}, r\_{0}, s\_{1}, a\_{1}, r\_{1}, ..., ..., s\_{T -1 }, a\_{T-1}, r\_{T-1})$,
+$\tau = (s_{0}, a_{0}, r_{0}, s_{1}, a_{1}, r_{1}, ..., ..., s_{T -1 }, a_{T-1}, r_{T-1})$,
 
 We will calculate the gradient of expectation(our performance measure) over trajectories ,
 
-$\nabla\_{\theta} J(\theta) = \nabla\_{\theta}E\_{\tau}[R(\tau)] = E\_{\tau}[ R(\tau) \nabla\_{\theta}\log p(\tau|\theta)]$,
+$\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[ R(\tau) \nabla_{\theta}\log p(\tau|\theta)]$,
 
 Here $p(\tau|\theta)$ is the probability of trajectory given the parameter $\theta$, 
 
-$$p(\tau|\theta) = \mu(s\_{0}) \prod\_{t=0}^{T-1}[\pi(a\_{t}|s\_{t},\theta)P(s\_{t+1},r\_{t}|s\_{t},a\_{t})]\\
-\log p(\tau|\theta) = \log\mu(s\_{0})+ \sum\_{t=0}^{T-1}[\log\pi(a\_{t}|s\_{t},\theta)+ \log P(s\_{t+1},r\_{t}|s\_{t},a\_{t})]\\
-\nabla\_{\theta}\log p(\tau|\theta) = \nabla\_{\theta}\sum\_{t=0}^{T-1}\log\pi(a\_{t}|s\_{t},\theta)$$ , 
-where $\mu(s\_{0})$ is the probability of initial state and $P(s\_{t+1},r\_{t}|s\_{t},a\_{t})$ is the probability of transitioning from $s\_{t}$ to $s\_{t+1}$ after taking action $a\_{t}$ (this represents the environment dynamics). Both $\nabla\_{\theta}\log\mu(s\_{0})$ and  $\nabla\_{\theta}\log P(s\_{t+1},r\_{t}|s\_{t},a\_{t})$ are equal to 0 as they don't depend on $\theta$. Since $\nabla\_{\theta}\log P(s\_{t+1},r\_{t}|s\_{t},a\_{t})= 0$, that means our algorithm doesn't care about the system dynamics, even without knowing anything about how the states are transitioning based on our actions, we can still learn. That's the best part of the algorithm. So now after substituting our gradient becomes,
-$\nabla\_{\theta} J(\theta) = \nabla\_{\theta}E\_{\tau}[R(\tau)] = E\_{\tau}[R\nabla\_{\theta}\sum\_{t=0}^{T-1}\log\pi(a\_{t}|s\_{t},\theta))] $. 
+$$p(\tau|\theta) = \mu(s_{0}) \prod_{t=0}^{T-1}[\pi(a_{t}|s_{t},\theta)P(s_{t+1},r_{t}|s_{t},a_{t})]\\
+\log p(\tau|\theta) = \log\mu(s_{0})+ \sum_{t=0}^{T-1}[\log\pi(a_{t}|s_{t},\theta)+ \log P(s_{t+1},r_{t}|s_{t},a_{t})]\\
+\nabla_{\theta}\log p(\tau|\theta) = \nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta)$$ , 
+where $\mu(s_{0})$ is the probability of initial state and $P(s_{t+1},r_{t}|s_{t},a_{t})$ is the probability of transitioning from $s_{t}$ to $s_{t+1}$ after taking action $a_{t}$ (this represents the environment dynamics). Both $\nabla_{\theta}\log\mu(s_{0})$ and  $\nabla_{\theta}\log P(s_{t+1},r_{t}|s_{t},a_{t})$ are equal to 0 as they don't depend on $\theta$. Since $\nabla_{\theta}\log P(s_{t+1},r_{t}|s_{t},a_{t})= 0$, that means our algorithm doesn't care about the system dynamics, even without knowing anything about how the states are transitioning based on our actions, we can still learn. That's the best part of the algorithm. So now after substituting our gradient becomes,
+$\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[R\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta))] $. 
 
-Let's understand the intuition behind this gradient. We are trying to maximize our performance measure $J(\theta)$ by increasing probability of good trajectories and decreasing probability of bad trajectories. $\nabla\_{\theta}\log\pi(a\_{t}|s\_{t},\theta))$ gives the direction in which we should move in the parameter space to increase the probability of action at time $t$. Since the final direction is the weighted sum of all vector directions with the Return of the trajectory as weight,.i.e, $\sum\_{i = 1}^{N}R(\tau\_{i})\nabla\_{\theta}\log p(\tau\_{i}|\theta)/N$,so if $R$ is higher for a trajectory the final gradient direction will tend to be in direction that maximizes the probability of actions taken in that trajectory and when $R$ is lower it will give lesser weightage to it.
+Let's understand the intuition behind this gradient. We are trying to maximize our performance measure $J(\theta)$ by increasing probability of good trajectories and decreasing probability of bad trajectories. $\nabla_{\theta}\log\pi(a_{t}|s_{t},\theta))$ gives the direction in which we should move in the parameter space to increase the probability of action at time $t$. Since the final direction is the weighted sum of all vector directions with the Return of the trajectory as weight,.i.e, $\sum_{i = 1}^{N}R(\tau_{i})\nabla_{\theta}\log p(\tau_{i}|\theta)/N$,so if $R$ is higher for a trajectory the final gradient direction will tend to be in direction that maximizes the probability of actions taken in that trajectory and when $R$ is lower it will give lesser weightage to it.
 
 We can improve this gradient further. We know that rewards collected before time $t$ shouldn't affect the probability of actions taken starting from $t$. Only the current state's information is required for the agent to take an action and the reward follows from that. So only the future discounted rewards should impact the probability of agent's actions. Using this fact, we can rewrite the equations as,
 
-$\nabla\_{\theta} J(\theta) = \nabla\_{\theta}E\_{\tau}[R(\tau)] = E\_{\tau}[\nabla\_{\theta}\sum\_{t=0}^{T-1}\log\pi(a\_{t}|s\_{t},\theta))\sum\_{t^\prime=t}^{T-1}\gamma^{t^{\prime}-t}r\_{t}]$
+$\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta))\sum_{t^\prime=t}^{T-1}\gamma^{t^{\prime}-t}r_{t}]$
 
 
 
@@ -289,46 +300,43 @@ There are still couple of problems with this gradient estimation. Do you see it?
 
 To alleviate the problem described in the last part of previous section, we will introduce the concept of baselines. Now the gradient of the performance measure changes to,
 
-$\nabla\_{\theta} J(\theta) = \nabla\_{\theta}E\_{\tau}[R(\tau)] = E\_{\tau}[\nabla\_{\theta}\sum\_{t=0}^{T-1}\log\pi(a\_{t}|s\_{t},\theta))(\sum\_{t^\prime=t}^{T-1}\gamma^{t^{\prime}-t}r\_{t}-b)]$,
-where b is the baseline. Intuitively, we want the baseline to be the average return when we are present in the state and we want to only increase (or decrease) the probability of the action if the observed return is more (or less) than the average. $\hat{A\_{t}} = \sum\_{t=t^{\prime}}^{T-1}\gamma^{t-t^{\prime}}r\_{t} - b$, is called the advantage estimate. Interestingly, this doesn't change our gradients. We can see why by looking at the part of expected value of the gradient where b is present,
+$\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta))(\sum_{t^\prime=t}^{T-1}\gamma^{t^{\prime}-t}r_{t}-b)]$,
+where b is the baseline. Intuitively, we want the baseline to be the average return when we are present in the state and we want to only increase (or decrease) the probability of the action if the observed return is more (or less) than the average. $\hat{A_{t}} = \sum_{t=t^{\prime}}^{T-1}\gamma^{t-t^{\prime}}r_{t} - b$, is called the advantage estimate. Interestingly, this doesn't change our gradients. We can see why by looking at the part of expected value of the gradient where b is present,
 
-$E\_{\tau}[\nabla\_{\theta}\sum\_{t=0}^{T-1}\log\pi(a\_{t}|s\_{t}) b]\\
- = E\_{\tau}[\nabla\_{\theta}\log p(\tau|\theta) b]\\
- = \sum\_{\tau}[p(\tau|\theta)\frac{\nabla\_{\theta}p(\tau|\theta)}{p(\tau|\theta)} b]\\
- = b\nabla\_{\theta}\sum\_{\tau}p(\tau|\theta)\\
- =b\nabla\_{\theta}1\\
+$E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t}) b]\\
+ = E_{\tau}[\nabla_{\theta}\log p(\tau|\theta) b]\\
+ = \sum_{\tau}[p(\tau|\theta)\frac{\nabla_{\theta}p(\tau|\theta)}{p(\tau|\theta)} b]\\
+ = b\nabla_{\theta}\sum_{\tau}p(\tau|\theta)\\
+ =b\nabla_{\theta}1\\
  = 0$
  
  You might be wondering, what are the good choices for b?
  
- - It can be a simple constant baseline: $b \approx \frac{1}{N}\sum\_{i=1}^{N}R(\tau^{(i)})$, this is just the average return of all the trajectories
+ - It can be a simple constant baseline: $b \approx \frac{1}{N}\sum_{i=1}^{N}R(\tau^{(i)})$, this is just the average return of all the trajectories
  - Or, it can be state-dependent expected return:
-   $b(s\_{t}) = E[r\_{t} + \gamma r\_{t+1}.... + \gamma^{T-1-t}r\_{T-1}| s\_{t}] = V^{\pi}(s\_{t})$.
+   $b(s_{t}) = E[r_{t} + \gamma r_{t+1}.... + \gamma^{T-1-t}r_{T-1}| s_{t}] = V^{\pi}(s_{t})$.
 
-To evaluate $V^{\pi}(s\_{t})$, we can have a neural network which takes the state as input and regress it over the target $\sum\_{i=t}^{T-1}\gamma^{i-t}r\_{t}$ after collecting multiple trajectories. This is the Monte-Carlo estimate of $V^{\pi}(s\_{t})$.
+To evaluate $V^{\pi}(s_{t})$, we can have a neural network which takes the state as input and regress it over the target $\sum_{i=t}^{T-1}\gamma^{i-t}r_{t}$ after collecting multiple trajectories. This is the Monte-Carlo estimate of $V^{\pi}(s_{t})$.
 Steps for Monte-Carlo estimate:
- - Initialize $V\_{\phi\_{0}}^{\pi}$
- - Collect Trajectories $\tau\_1, \tau\_2,...., \tau\_m$
+ - Initialize $V_{\phi_{0}}^{\pi}$
+ - Collect Trajectories $\tau_1, \tau_2,...., \tau_m$
  - Regress against observed returns
- $$\phi\_{i+1} = \underset{\phi}{\arg\min} \frac{1}{m} \sum\_{i=0}^{m}\sum\_{t=0}^{H-1}(V\_{\phi\_{i}}^{\pi}(s\_{t}^{(i)}) - \sum\_{k=t}^{H-1} R(s\_{k}^{(i)}, u\_{k}^{(i)}))^2$$
+ $$\phi_{i+1} = \underset{\phi}{\arg\min} \frac{1}{m} \sum_{i=0}^{m}\sum_{t=0}^{H-1}(V_{\phi_{i}}^{\pi}(s_{t}^{(i)}) - \sum_{k=t}^{H-1} R(s_{k}^{(i)}, u_{k}^{(i)}))^2$$
      
  
 
-We can also do a Temporal-Difference TD(0) update, by regressing $V^{\pi}(s\_{t})$ over $r\_{t} + \gamma V^{\pi}(s\_{t+1})$ after collecting several samples of $(s\_{t}, a\_{t}, s\_{t+1}, r\_{t})$. Motivation for this comes from the Bellman Equation,
+We can also do a Temporal-Difference TD(0) update, by regressing $V^{\pi}(s_{t})$ over $r_{t} + \gamma V^{\pi}(s_{t+1})$ after collecting several samples of $(s_{t}, a_{t}, s_{t+1}, r_{t})$. Motivation for this comes from the Bellman Equation,
 $$V^{\pi}(s) = \underset{a}\sum \pi(a|s)\underset{s^{\prime}}\sum P(s^{\prime}|s,a)[r(s,a,s^{\prime}) + \gamma V^{\pi}(s^{\prime})]$$ 
 
 
 Since we don't know the transition dynamics ($P(s^{\prime}|s,a)$), so we collect experiences $(s,a,s^{\prime},r)$ using our current policy and average over them to roughly get the expected value. Steps for TD estimate:
 
- - Initialize $V\_{\phi\_{0}}^{\pi}$
+ - Initialize $V_{\phi_{0}}^{\pi}$
  - Collect data $(s,a,s^{\prime},r)$
  - Regress against TD target
- $$\phi\_{i+1} = \underset{\phi}{\min} \underset{s,a,s^{\prime},r}\sum || r + \gamma V\_{\phi\_{i}}^{\pi}(s^{\prime}) -V\_{\phi\_{i}}^{\pi}(s)||\_{2}^{2} + \lambda ||\phi - \phi\_{i}||\_{2}^{2}$$
+ $$\phi_{i+1} = \underset{\phi}{\min} \underset{s,a,s^{\prime},r}\sum || r + \gamma V_{\phi_{i}}^{\pi}(s^{\prime}) -V_{\phi_{i}}^{\pi}(s)||_{2}^{2} + \lambda ||\phi - \phi_{i}||_{2}^{2}$$
   
-The second term in the above loss function ensures our parameter $\phi$ does't move far from previous estimate $\phi\_{i}$.
-
-
-
+The second term in the above loss function ensures our parameter $\phi$ does't move far from previous estimate $\phi_{i}$.
 
 Let's look at some of the algorithms.
 
@@ -377,15 +385,17 @@ Note: Here $G$  and $R$ are used to denote return and rewards respectively.
 
 ### Generalized Advantage Estimate (GAE)
 
-In policy gradient, we want to increase the probability of action which gives us high return for that state. $Q^{\pi}(s\_{t},a\_{t}) = E[r\_{0} + \gamma r\_{1} + \gamma^2 r\_{2} ...|s\_{t},a\_{t}]$ is the expected return for our current state and action. From a single rollout $R(s\_{t}, a\_{t}) = \sum\_{i=t}^{T-1}\gamma^{i-t}r\_{t}$, we obtain the estimation of $Q^{\pi}(s,a) = E[r\_{0} + \gamma r\_{1} + \gamma^2 r\_{2} ...| s\_{0}=s,a\_{0}=a]$, but this will vary across trajectories and will have high variance, hence convergence may be slow. To reduce variance we can introduce function approximation,
+### Generalized Advantage Estimate (GAE)
 
-$Q^{\pi}(s,a) = E[r\_{0} + \gamma r\_{1} + \gamma^2 r\_{2} ...| s\_{0}=s,a\_{0}=a]\\
-= E[r\_{0} + \gamma V^{\pi}(s\_{1})| s\_{0}=s,a\_{0}=a] $
+In policy gradient, we want to increase the probability of action which gives us high return for that state. $Q^{\pi}(s_{t},a_{t}) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...|s_{t},a_{t}]$ is the expected return for our current state and action. From a single rollout $R(s_{t}, a_{t}) = \sum_{i=t}^{T-1}\gamma^{i-t}r_{t}$, we obtain the estimation of $Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...| s_{0}=s,a_{0}=a]$, but this will vary across trajectories and will have high variance, hence convergence may be slow. To reduce variance we can introduce function approximation,
+
+$Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...| s_{0}=s,a_{0}=a]\\
+= E[r_{0} + \gamma V^{\pi}(s_{1})| s_{0}=s,a_{0}=a] $
 
  or we can take more steps,
 
-$= E[r\_{0} +\gamma r\_{1}  + \gamma^2 V^{\pi}(s\_{2})| s\_{0}=s,a\_{0}=a]\\
-= E[r\_{0} +\gamma r\_{1} + \gamma^2 r\_{2}  + \gamma^3 V^{\pi}(s\_{3})| s\_{0}=s,a\_{0}=a]\\
+$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\\
+= E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\\
 = ....$
 
 When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
@@ -396,21 +406,21 @@ When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance
 </figcaption>
 </figure>
 
-What if there was a way to strike a balance between the two? The answer to that is Generalized Advantage Estimate (GAE). In GAE, we take the weighted sum of all the different step estimates to create the final estimate. Let the $k$-step Advantage estimate be $ \hat{A}\_{t}^{(k)} = r\_{t} +\gamma r\_{t+1}   + \gamma^2 r\_{t+2}+... +\gamma^{k-1} r\_{t+k-1}+ \gamma^{k} V(s\_{t+k}) - V(s\_{t}) $  and the TD residual be $\delta\_{t}^{V} = \hat{A}\_{t}^{(1)} = r\_{t} +\gamma V^{\pi}(s\_{t+1}) - V(s\_{t}) $, then the generalized advantage estimate $GAE(\gamma,\lambda)$ is 
+What if there was a way to strike a balance between the two? The answer to that is Generalized Advantage Estimate (GAE). In GAE, we take the weighted sum of all the different step estimates to create the final estimate. Let the $k$-step Advantage estimate be $ \hat{A}_{t}^{(k)} = r_{t} +\gamma r_{t+1}   + \gamma^2 r_{t+2}+... +\gamma^{k-1} r_{t+k-1}+ \gamma^{k} V(s_{t+k}) - V(s_{t}) $  and the TD residual be $\delta_{t}^{V} = \hat{A}_{t}^{(1)} = r_{t} +\gamma V^{\pi}(s_{t+1}) - V(s_{t}) $, then the generalized advantage estimate $GAE(\gamma,\lambda)$ is 
 defined as ,
 
-$$\hat{A}\_{t}^{GAE(\gamma,\lambda)} = (1-\lambda)(\hat{A}\_{t}^{(1)} + \lambda \hat{A}\_{t}^{(2)} + \lambda^2 \hat{A}\_{t}^{(3)} + ...)\\
-=  (1-\lambda)( \delta\_{t}^{V} + \lambda (\delta\_{t}^{V} + \gamma \delta\_{t+1}^{V}) +\lambda^2(\delta\_{t}^{V} + \gamma \delta\_{t+1}^{V} + \gamma^2 \delta\_{t+2}^{V}) + ....)\\
-= (1-\lambda)( \delta\_{t}^{V} (1 + \lambda +\lambda^2 +\lambda^3 +...) +  \gamma \delta\_{t+1}^{V} (\lambda +\lambda^2 +\lambda^3 +...) + \gamma^2 \delta\_{t+2}^{V} (\lambda^2 +\lambda^3 + \lambda^4 ...) + ...)\\
-= (1-\lambda)(\delta\_{t}^{V}(\frac{1}{(1-\lambda)} + \gamma \delta\_{t+1}^{V}(\frac{\lambda}{(1-\lambda)}) + \gamma^2 \delta\_{t+2}^{V}(\frac{\lambda^2}{(1-\lambda)} + ...)\\
-= \sum\_{l=0}^{\infty} (\gamma \lambda)^l \delta\_{t+l}^{V}$$
+$$\hat{A}_{t}^{GAE(\gamma,\lambda)} = (1-\lambda)(\hat{A}_{t}^{(1)} + \lambda \hat{A}_{t}^{(2)} + \lambda^2 \hat{A}_{t}^{(3)} + ...)\\
+=  (1-\lambda)( \delta_{t}^{V} + \lambda (\delta_{t}^{V} + \gamma \delta_{t+1}^{V}) +\lambda^2(\delta_{t}^{V} + \gamma \delta_{t+1}^{V} + \gamma^2 \delta_{t+2}^{V}) + ....)\\
+= (1-\lambda)( \delta_{t}^{V} (1 + \lambda +\lambda^2 +\lambda^3 +...) +  \gamma \delta_{t+1}^{V} (\lambda +\lambda^2 +\lambda^3 +...) + \gamma^2 \delta_{t+2}^{V} (\lambda^2 +\lambda^3 + \lambda^4 ...) + ...)\\
+= (1-\lambda)(\delta_{t}^{V}(\frac{1}{(1-\lambda)} + \gamma \delta_{t+1}^{V}(\frac{\lambda}{(1-\lambda)}) + \gamma^2 \delta_{t+2}^{V}(\frac{\lambda^2}{(1-\lambda)} + ...)\\
+= \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}^{V}$$
 
-The equation uses the fact that $\hat{A}\_{t}^{(2)} = r\_{t} +\gamma r\_{t+1}   + \gamma^2 V(s\_{t+2}) - V(s\_{t})\\
-    = r\_{t} + \gamma V(s\_{t+1}) - V(s\_{t}) +\gamma (r\_{t+1}   + \gamma V(s\_{t+2})  - V(s\_{t+1}))
-    = \delta\_{t}^{V} + \gamma \delta\_{t+1}^{V}$
+The equation uses the fact that $\hat{A}_{t}^{(2)} = r_{t} +\gamma r_{t+1}   + \gamma^2 V(s_{t+2}) - V(s_{t})\\
+    = r_{t} + \gamma V(s_{t+1}) - V(s_{t}) +\gamma (r_{t+1}   + \gamma V(s_{t+2})  - V(s_{t+1}))
+    = \delta_{t}^{V} + \gamma \delta_{t+1}^{V}$
 
 and similarly for other terms. The generalized advantage estimator introduces trade-off between bias and variance, controlled by parameter $\lambda$ when $0<\lambda<1$. There are two extreme cases when $\lambda=0$ and  $\lambda=1$. When 
- $\lambda=0$, $GAE(\gamma,0) =  r\_{t} + \gamma V(s\_{t+1}) - V(s\_{t})$, it is same as Temporal Difference TD(0) method and when $\lambda=1$ $GAE(\gamma,1) = \sum\_{l=0}^{\infty}\gamma^l r\_{t+l} - V(s\_{t})$, it becomes Monte Carlo method. So by selecting a suitable value of $\lambda$ we can reduce the variance (0.99 works well in practice).
+ $\lambda=0$, $GAE(\gamma,0) =  r_{t} + \gamma V(s_{t+1}) - V(s_{t})$, it is same as Temporal Difference TD(0) method and when $\lambda=1$ $GAE(\gamma,1) = \sum_{l=0}^{\infty}\gamma^l r_{t+l} - V(s_{t})$, it becomes Monte Carlo method. So by selecting a suitable value of $\lambda$ we can reduce the variance (0.99 works well in practice).
  
  ### Ending Note
 
