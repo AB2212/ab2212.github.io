@@ -37,10 +37,10 @@ A lot of the current successes in Deep Reinforcement Learning is because of Poli
 
 We can write the parameterized policy as, $\pi (a\|s,\theta) = P(A_{t}=a\|S_{t} = s, \theta_{t} = \theta)$, i.e., probability that action $a$ is taken at time $t$ given that the environment is in state $s$ at time $t$ with parameter $\theta \in \mathcal{R}^{d} $. We consider a scalar performance measure $J(\theta)$ which is the expected return given current policy i.e. $E[R\|\pi_{\theta}]$ where $R$ is the sum of discounted future rewards $r$, $R = \sum_{t=0}^{\infty}\gamma^{t}r_{t}$, $\gamma$ is the discounting factor, generally it is 0.99 (discounting emphasizes recent rewards than future ones, it prevents the sum from blowing up and helps in reducing variance). We try to maximize $J(\theta)$ by updating the parameters using gradient ascent, $\theta_{t+1} = \theta_{t} + \alpha*\widehat{\nabla J(\theta_{t})}$, where $\widehat{\nabla J(\theta_{t})} \in \mathcal{R}^{d}$ is a stochastic estimate (calculated through sampling) whose expectation approximates the gradient of the performance measure with respect to its parameter $\theta$. Let's understand the math behind it by calculating the gradient of expectation $E_{x\sim p(x\|\theta)}[f(x)]$,
 
-$$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x|\theta) f(x)dx
-=  \int \nabla_{\theta}p(x|\theta) f(x)dx\\
-= \int p(x|\theta)\frac{\nabla_{\theta}p(x|\theta)}{p(x|\theta)} f(x)dx
-= \int p(x|\theta)\nabla_{\theta}\log p(x|\theta) f(x)dx
+$$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x|\theta) f(x)dx\newline
+= \int \nabla_{\theta}p(x|\theta) f(x)dx\newline
+= \int p(x|\theta)\frac{\nabla_{\theta}p(x|\theta)}{p(x|\theta)} f(x)dx\newline
+= \int p(x|\theta)\nabla_{\theta}\log p(x|\theta) f(x)dx\newline
 = E_{x}[ f(x)\nabla_{\theta}\log p(x|\theta)]$$
                                                       
 Here we have used the fact that $\nabla\log f(x) = \frac{\nabla f(x)}{f(x)}$, this converts the integral into expectation, using which we can calculate the integral approximately through sampling. We can sample $N$ such $x_{i}$ from $p(x\|\theta)$ and calculate $ f(x_{i}) \nabla_{\theta}\log p(x_{i}\|\theta)$ for each $x_{i}$, so the gradient of the expectation will be, $$\nabla_{\theta}E_{x}[f(x)] \approx  \sum_{i=0}^{N} (f(x_{i}) \nabla_{\theta}\log p(x_{i}|\theta))/N$$
