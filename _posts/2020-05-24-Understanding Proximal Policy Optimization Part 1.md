@@ -37,10 +37,10 @@ A lot of the current successes in Deep Reinforcement Learning is because of Poli
 
 We can write the parameterized policy as, $\pi (a\|s,\theta) = P(A_{t}=a\|S_{t} = s, \theta_{t} = \theta)$, i.e., probability that action $a$ is taken at time $t$ given that the environment is in state $s$ at time $t$ with parameter $\theta \in \mathcal{R}^{d} $. We consider a scalar performance measure $J(\theta)$ which is the expected return given current policy i.e. $E[R\|\pi_{\theta}]$ where $R$ is the sum of discounted future rewards $r$, $R = \sum_{t=0}^{\infty}\gamma^{t}r_{t}$, $\gamma$ is the discounting factor, generally it is 0.99 (discounting emphasizes recent rewards than future ones, it prevents the sum from blowing up and helps in reducing variance). We try to maximize $J(\theta)$ by updating the parameters using gradient ascent, $\theta_{t+1} = \theta_{t} + \alpha*\widehat{\nabla J(\theta_{t})}$, where $\widehat{\nabla J(\theta_{t})} \in \mathcal{R}^{d}$ is a stochastic estimate (calculated through sampling) whose expectation approximates the gradient of the performance measure with respect to its parameter $\theta$. Let's understand the math behind it by calculating the gradient of expectation $E_{x\sim p(x\|\theta)}[f(x)]$,
 
-$$\nabla\_{\theta}E\_{x}[f(x)] = \nabla\_{\theta}\int p(x|\theta) f(x)dx \\
-                             =  \int \nabla\_{\theta}p(x|\theta) f(x)dx \\
-                             = \int p(x|\theta)\frac{\nabla\_{\theta}p(x|\theta)}{p(x|\theta)} f(x)dx\\
-                             = \int p(x|\theta)\nabla\_{\theta}\log p(x|\theta) f(x)dx\\
+$$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x|\theta) f(x)dx \\
+                             =  \int \nabla_{\theta}p(x|\theta) f(x)dx \\
+                             = \int p(x|\theta)\frac{\nabla_{\theta}p(x|\theta)}{p(x|\theta)} f(x)dx\\
+                             = \int p(x|\theta)\nabla_{\theta}\log p(x|\theta) f(x)dx\\
                              = E_{x}[ f(x) \nabla\_{\theta}\log p(x|\theta)]$$,
                              
                             
@@ -52,11 +52,16 @@ Let's try to understand this gradient expression as it will be the central idea 
 Consider a  reward function which takes a real number (e.g. agent's action) and outputs a reward value for that action. Let's define an arbitrary reward function $f$, such that $f: \mathcal{R}-> \mathcal{R}$,
 
 $f(x) = 0 $, for $ x <=0$
+
 $f(x) = 2 $, for $ 0< x <=2$
+
 $f(x) = x $, for $ 2< x <=4$
+
 $f(x) = 8 - x $, for $ 4< x <=8$
+
 $f(x) = 0 $, for $ x>8$,
-the function looks like this
+
+The function looks like this
 
 <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/reward_function.png" alt="">
@@ -402,7 +407,7 @@ When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance
 What if there was a way to strike a balance between the two? The answer to that is Generalized Advantage Estimate (GAE). In GAE, we take the weighted sum of all the different step estimates to create the final estimate. Let the $k$-step Advantage estimate be $ \hat{A}\_{t}^{(k)} = r_{t} +\gamma r_{t+1}   + \gamma^2 r_{t+2}+... +\gamma^{k-1} r_{t+k-1}+ \gamma^{k} V(s_{t+k}) - V(s_{t}) $  and the TD residual be $\delta_{t}^{V} = \hat{A}\_{t}^{(1)} = r_{t} +\gamma V^{\pi}(s_{t+1}) - V(s_{t}) $, then the generalized advantage estimate $GAE(\gamma,\lambda)$ is 
 defined as ,
 
-$$\hat{A}\_{t}^{GAE(\gamma,\lambda)} = (1-\lambda)(\hat{A}_{t}^{(1)} + \lambda \hat{A}_{t}^{(2)} + \lambda^2 \hat{A}_{t}^{(3)} + ...)\\
+$$\hat{A}_{t}^{GAE(\gamma,\lambda)} = (1-\lambda)(\hat{A}_{t}^{(1)} + \lambda \hat{A}_{t}^{(2)} + \lambda^2 \hat{A}_{t}^{(3)} + ...)\\
 =  (1-\lambda)( \delta_{t}^{V} + \lambda (\delta_{t}^{V} + \gamma \delta_{t+1}^{V}) +\lambda^2(\delta_{t}^{V} + \gamma \delta_{t+1}^{V} + \gamma^2 \delta_{t+2}^{V}) + ....)\\
 = (1-\lambda)( \delta_{t}^{V} (1 + \lambda +\lambda^2 +\lambda^3 +...) +  \gamma \delta_{t+1}^{V} (\lambda +\lambda^2 +\lambda^3 +...) + \gamma^2 \delta_{t+2}^{V} (\lambda^2 +\lambda^3 + \lambda^4 ...) + ...)\\
 = (1-\lambda)(\delta_{t}^{V}(\frac{1}{(1-\lambda)} + \gamma \delta_{t+1}^{V}(\frac{\lambda}{(1-\lambda)}) + \gamma^2 \delta_{t+2}^{V}(\frac{\lambda^2}{(1-\lambda)} + ...)\\
