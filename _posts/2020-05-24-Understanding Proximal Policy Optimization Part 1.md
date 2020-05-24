@@ -387,13 +387,13 @@ Note: Here $G$  and $R$ are used to denote return and rewards respectively.
 
 In policy gradient, we want to increase the probability of action which gives us high return for that state. $Q^{\pi}(s_{t},a_{t}) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...\|s_{t},a_{t}]$ is the expected return for our current state and action. From a single rollout $R(s_{t}, a_{t}) = \sum_{i=t}^{T-1}\gamma^{i-t}r_{t}$, we obtain the estimation of $Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...\| s_{0}=s,a_{0}=a]$, but this will vary across trajectories and will have high variance, hence convergence may be slow. To reduce variance we can introduce function approximation,
 
-$Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...\| s_{0}=s,a_{0}=a]\\
+$Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...| s_{0}=s,a_{0}=a]\\
 = E[r_{0} + \gamma V^{\pi}(s_{1})\| s_{0}=s,a_{0}=a] $
 
  or we can take more steps,
 
-$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})\| s_{0}=s,a_{0}=a]\\
-= E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})\| s_{0}=s,a_{0}=a]\\
+$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\\
+= E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\\
 = ....$
 
 When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
@@ -413,14 +413,14 @@ $$\hat{A}_{t}^{GAE(\gamma,\lambda)} = (1-\lambda)(\hat{A}_{t}^{(1)} + \lambda \h
 = (1-\lambda)(\delta_{t}^{V}(\frac{1}{(1-\lambda)} + \gamma \delta_{t+1}^{V}(\frac{\lambda}{(1-\lambda)}) + \gamma^2 \delta_{t+2}^{V}(\frac{\lambda^2}{(1-\lambda)} + ...)\\
 = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}^{V}$$
 
-The equation uses the fact that $\hat{A}_{t}^{(2)} = r_{t} +\gamma r_{t+1}   + \gamma^2 V(s_{t+2}) - V(s_{t})\\
+The equation uses the fact that $\hat{A}\_{t}^{(2)} = r_{t} +\gamma r_{t+1}   + \gamma^2 V(s_{t+2}) - V(s_{t})\\
     = r_{t} + \gamma V(s_{t+1}) - V(s_{t}) +\gamma (r_{t+1}   + \gamma V(s_{t+2})  - V(s_{t+1}))
     = \delta_{t}^{V} + \gamma \delta_{t+1}^{V}$
 
 and similarly for other terms. The generalized advantage estimator introduces trade-off between bias and variance, controlled by parameter $\lambda$ when $0<\lambda<1$. There are two extreme cases when $\lambda=0$ and  $\lambda=1$. When 
  $\lambda=0$, $GAE(\gamma,0) =  r_{t} + \gamma V(s_{t+1}) - V(s_{t})$, it is same as Temporal Difference TD(0) method and when $\lambda=1$ $GAE(\gamma,1) = \sum_{l=0}^{\infty}\gamma^l r_{t+l} - V(s_{t})$, it becomes Monte Carlo method. So by selecting a suitable value of $\lambda$ we can reduce the variance (0.99 works well in practice).
  
- ### Ending Note
+### Ending Note
 
 In this post we learnt the mathematics behind Policy Gradient methods and various modifications to reduce variance of the gradients and speed-up learning. In part 2, we will learn how we can improve sample efficiency and make the learning algorithm more reliable through Importance Sampling, Trust Regions and Clipped Surrogate methods. These are some of the core ideas in PPO. In part 3, we will learn to build our own agent from scratch and train it using PPO in Pytorch.
 
