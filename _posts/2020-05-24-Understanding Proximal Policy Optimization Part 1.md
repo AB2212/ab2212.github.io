@@ -37,11 +37,11 @@ A lot of the current successes in Deep Reinforcement Learning is because of Poli
 
 We can write the parameterized policy as, $\pi (a\|s,\theta) = P(A_{t}=a\|S_{t} = s, \theta_{t} = \theta)$, i.e., probability that action $a$ is taken at time $t$ given that the environment is in state $s$ at time $t$ with parameter $\theta \in \mathcal{R}^{d} $. We consider a scalar performance measure $J(\theta)$ which is the expected return given current policy i.e. $E[R\|\pi_{\theta}]$ where $R$ is the sum of discounted future rewards $r$, $R = \sum_{t=0}^{\infty}\gamma^{t}r_{t}$, $\gamma$ is the discounting factor, generally it is 0.99 (discounting emphasizes recent rewards than future ones, it prevents the sum from blowing up and helps in reducing variance). We try to maximize $J(\theta)$ by updating the parameters using gradient ascent, $\theta_{t+1} = \theta_{t} + \alpha*\widehat{\nabla J(\theta_{t})}$, where $\widehat{\nabla J(\theta_{t})} \in \mathcal{R}^{d}$ is a stochastic estimate (calculated through sampling) whose expectation approximates the gradient of the performance measure with respect to its parameter $\theta$. Let's understand the math behind it by calculating the gradient of expectation $E_{x\sim p(x\|\theta)}[f(x)]$,
 
-$$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x\|\theta) f(x)dx \\
+$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x\|\theta) f(x)dx \\
                              =  \int \nabla_{\theta}p(x\|\theta) f(x)dx \\
                              = \int p(x\|\theta)\frac{\nabla_{\theta}p(x\|\theta)}{p(x\|\theta)} f(x)dx\\
                              = \int p(x\|\theta)\nabla_{\theta}\log p(x\|\theta) f(x)dx\\
-                             = E_{x}[ f(x) \nabla_{\theta}\log p(x\|\theta)]$$,
+                             = E_{x}[ f(x) \nabla_{\theta}\log p(x\|\theta)]$,
                              
                             
 Here we have used the fact that $\nabla\log f(x) = \frac{\nabla f(x)}{f(x)}$, this converts the integral into expectation, using which we can calculate the integral approximately through sampling. We can sample $N$ such $x_{i}$ from $p(x\|\theta)$ and calculate $ f(x_{i}) \nabla_{\theta}\log p(x_{i}\|\theta)$ for each $x_{i}$, so the gradient of the expectation will be, $$\nabla_{\theta}E_{x}[f(x)] \approx  \sum_{i=0}^{N} (f(x_{i}) \nabla_{\theta}\log p(x_{i}|\theta))/N$$
@@ -282,9 +282,11 @@ Here $p(\tau\|\theta)$ is the probability of trajectory given the parameter $\th
 
 $$p(\tau|\theta) = \mu(s_{0}) \prod_{t=0}^{T-1}[\pi(a_{t}|s_{t},\theta)P(s_{t+1},r_{t}|s_{t},a_{t})]\\
 \log p(\tau|\theta) = \log\mu(s_{0})+ \sum_{t=0}^{T-1}[\log\pi(a_{t}|s_{t},\theta)+ \log P(s_{t+1},r_{t}|s_{t},a_{t})]\\
-\nabla_{\theta}\log p(\tau|\theta) = \nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta)$$,
+\nabla_{\theta}\log p(\tau|\theta) = \nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta)$$
+
 where $\mu(s_{0})$ is the probability of initial state and $P(s_{t+1},r_{t}\|s_{t},a_{t})$ is the probability of transitioning from $s_{t}$ to $s_{t+1}$ after taking action $a_{t}$ (this represents the environment dynamics). Both $\nabla_{\theta}\log\mu(s_{0})$ and  $\nabla_{\theta}\log P(s_{t+1},r_{t}\|s_{t},a_{t})$ are equal to 0 as they don't depend on $\theta$. Since $\nabla_{\theta}\log P(s_{t+1},r_{t}\|s_{t},a_{t})= 0$, that means our algorithm doesn't care about the system dynamics, even without knowing anything about how the states are transitioning based on our actions, we can still learn. That's the best part of the algorithm. So now after substituting our gradient becomes,
-$\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[R\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}\|s_{t},\theta))] $. 
+
+$\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[R\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}\|s_{t},\theta))] $
 
 Let's understand the intuition behind this gradient. We are trying to maximize our performance measure $J(\theta)$ by increasing probability of good trajectories and decreasing probability of bad trajectories. $\nabla_{\theta}\log\pi(a_{t}\|s_{t},\theta))$ gives the direction in which we should move in the parameter space to increase the probability of action at time $t$. Since the final direction is the weighted sum of all vector directions with the Return of the trajectory as weight,.i.e, $\sum_{i = 1}^{N}R(\tau_{i})\nabla_{\theta}\log p(\tau_{i}\|\theta)/N$,so if $R$ is higher for a trajectory the final gradient direction will tend to be in direction that maximizes the probability of actions taken in that trajectory and when $R$ is lower it will give lesser weightage to it.
 
@@ -392,8 +394,8 @@ $$Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...| s_{0}=s,a_{0}=a]\\
 
  or we can take more steps,
 
-$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\
-= E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\
+$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\\
+= E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\\
 = ....$
 
 When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
