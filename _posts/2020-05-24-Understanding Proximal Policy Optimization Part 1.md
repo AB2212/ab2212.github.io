@@ -413,9 +413,9 @@ $$\hat{A}_{t}^{GAE(\gamma,\lambda)} = (1-\lambda)(\hat{A}_{t}^{(1)} + \lambda \h
 = (1-\lambda)(\delta_{t}^{V}(\frac{1}{(1-\lambda)} + \gamma \delta_{t+1}^{V}(\frac{\lambda}{(1-\lambda)}) + \gamma^2 \delta_{t+2}^{V}(\frac{\lambda^2}{(1-\lambda)} + ...)\\
 = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}^{V}$$
 
-The equation uses the fact that $\hat{A}\_{t}^{(2)} = r_{t} +\gamma r_{t+1}   + \gamma^2 V(s_{t+2}) - V(s_{t})\\
-    = r_{t} + \gamma V(s_{t+1}) - V(s_{t}) +\gamma (r_{t+1}   + \gamma V(s_{t+2})  - V(s_{t+1}))
-    = \delta_{t}^{V} + \gamma \delta_{t+1}^{V}$
+The equation uses the fact that $$\hat{A}\_{t}^{(2)} = r_{t} +\gamma r_{t+1}   + \gamma^2 V(s_{t+2}) - V(s_{t}) \\
+    = r_{t} + \gamma V(s_{t+1}) - V(s_{t}) +\gamma (r_{t+1}   + \gamma V(s_{t+2})  - V(s_{t+1})) \\
+    = \delta_{t}^{V} + \gamma \delta_{t+1}^{V}$$
 
 and similarly for other terms. The generalized advantage estimator introduces trade-off between bias and variance, controlled by parameter $\lambda$ when $0<\lambda<1$. There are two extreme cases when $\lambda=0$ and  $\lambda=1$. When 
  $\lambda=0$, $GAE(\gamma,0) =  r_{t} + \gamma V(s_{t+1}) - V(s_{t})$, it is same as Temporal Difference TD(0) method and when $\lambda=1$ $GAE(\gamma,1) = \sum_{l=0}^{\infty}\gamma^l r_{t+l} - V(s_{t})$, it becomes Monte Carlo method. So by selecting a suitable value of $\lambda$ we can reduce the variance (0.99 works well in practice).
