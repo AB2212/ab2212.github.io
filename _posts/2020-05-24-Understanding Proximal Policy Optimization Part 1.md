@@ -37,11 +37,11 @@ A lot of the current successes in Deep Reinforcement Learning is because of Poli
 
 We can write the parameterized policy as, $\pi (a\|s,\theta) = P(A_{t}=a\|S_{t} = s, \theta_{t} = \theta)$, i.e., probability that action $a$ is taken at time $t$ given that the environment is in state $s$ at time $t$ with parameter $\theta \in \mathcal{R}^{d} $. We consider a scalar performance measure $J(\theta)$ which is the expected return given current policy i.e. $E[R\|\pi_{\theta}]$ where $R$ is the sum of discounted future rewards $r$, $R = \sum_{t=0}^{\infty}\gamma^{t}r_{t}$, $\gamma$ is the discounting factor, generally it is 0.99 (discounting emphasizes recent rewards than future ones, it prevents the sum from blowing up and helps in reducing variance). We try to maximize $J(\theta)$ by updating the parameters using gradient ascent, $\theta_{t+1} = \theta_{t} + \alpha*\widehat{\nabla J(\theta_{t})}$, where $\widehat{\nabla J(\theta_{t})} \in \mathcal{R}^{d}$ is a stochastic estimate (calculated through sampling) whose expectation approximates the gradient of the performance measure with respect to its parameter $\theta$. Let's understand the math behind it by calculating the gradient of expectation $E_{x\sim p(x\|\theta)}[f(x)]$,
 
-$$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x|\theta) f(x)dx \\
-                             =  \int \nabla_{\theta}p(x|\theta) f(x)dx \\
-                             = \int p(x|\theta)\frac{\nabla_{\theta}p(x|\theta)}{p(x|\theta)} f(x)dx\\
-                             = \int p(x|\theta)\nabla_{\theta}\log p(x|\theta) f(x)dx\\
-                             = E_{x}[ f(x) \nabla\_{\theta}\log p(x|\theta)]$$,
+$$\nabla_{\theta}E_{x}[f(x)] = \nabla_{\theta}\int p(x\|\theta) f(x)dx \\
+                             =  \int \nabla_{\theta}p(x\|\theta) f(x)dx \\
+                             = \int p(x\|\theta)\frac{\nabla_{\theta}p(x\|\theta)}{p(x\|\theta)} f(x)dx\\
+                             = \int p(x\|\theta)\nabla_{\theta}\log p(x\|\theta) f(x)dx\\
+                             = E_{x}[ f(x) \nabla_{\theta}\log p(x\|\theta)]$$,
                              
                             
 Here we have used the fact that $\nabla\log f(x) = \frac{\nabla f(x)}{f(x)}$, this converts the integral into expectation, using which we can calculate the integral approximately through sampling. We can sample $N$ such $x_{i}$ from $p(x\|\theta)$ and calculate $ f(x_{i}) \nabla_{\theta}\log p(x_{i}\|\theta)$ for each $x_{i}$, so the gradient of the expectation will be, $$\nabla_{\theta}E_{x}[f(x)] \approx  \sum_{i=0}^{N} (f(x_{i}) \nabla_{\theta}\log p(x_{i}|\theta))/N$$
@@ -303,12 +303,12 @@ To alleviate the problem described in the last part of previous section, we will
 $\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}|s_{t},\theta))(\sum_{t^\prime=t}^{T-1}\gamma^{t^{\prime}-t}r_{t}-b)]$,
 where b is the baseline. Intuitively, we want the baseline to be the average return when we are present in the state and we want to only increase (or decrease) the probability of the action if the observed return is more (or less) than the average. $\hat{A_{t}} = \sum_{t=t^{\prime}}^{T-1}\gamma^{t-t^{\prime}}r_{t} - b$, is called the advantage estimate. Interestingly, this doesn't change our gradients. We can see why by looking at the part of expected value of the gradient where b is present,
 
-$E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}\|s_{t}) b]\\
+$$E_{\tau}[\nabla_{\theta}\sum_{t=0}^{T-1}\log\pi(a_{t}\|s_{t}) b]\\
  = E_{\tau}[\nabla_{\theta}\log p(\tau\|\theta) b]\\
  = \sum_{\tau}[p(\tau\|\theta)\frac{\nabla_{\theta}p(\tau\|\theta)}{p(\tau\|\theta)} b]\\
  = b\nabla_{\theta}\sum_{\tau}p(\tau\|\theta)\\
  =b\nabla_{\theta}1\\
- = 0$
+ = 0$$
  
  You might be wondering, what are the good choices for b?
  
@@ -387,14 +387,14 @@ Note: Here $G$  and $R$ are used to denote return and rewards respectively.
 
 In policy gradient, we want to increase the probability of action which gives us high return for that state. $Q^{\pi}(s_{t},a_{t}) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...\|s_{t},a_{t}]$ is the expected return for our current state and action. From a single rollout $R(s_{t}, a_{t}) = \sum_{i=t}^{T-1}\gamma^{i-t}r_{t}$, we obtain the estimation of $Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...\| s_{0}=s,a_{0}=a]$, but this will vary across trajectories and will have high variance, hence convergence may be slow. To reduce variance we can introduce function approximation,
 
-$Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...| s_{0}=s,a_{0}=a]\\
-= E[r_{0} + \gamma V^{\pi}(s_{1})\| s_{0}=s,a_{0}=a] $
+$$Q^{\pi}(s,a) = E[r_{0} + \gamma r_{1} + \gamma^2 r_{2} ...| s_{0}=s,a_{0}=a]\\
+= E[r_{0} + \gamma V^{\pi}(s_{1})\| s_{0}=s,a_{0}=a] $$
 
  or we can take more steps,
 
-$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\\
+$$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\\
 = E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\\
-= ....$
+= ....$$
 
 When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
 
@@ -413,7 +413,7 @@ $$\hat{A}_{t}^{GAE(\gamma,\lambda)} = (1-\lambda)(\hat{A}_{t}^{(1)} + \lambda \h
 = (1-\lambda)(\delta_{t}^{V}(\frac{1}{(1-\lambda)} + \gamma \delta_{t+1}^{V}(\frac{\lambda}{(1-\lambda)}) + \gamma^2 \delta_{t+2}^{V}(\frac{\lambda^2}{(1-\lambda)} + ...)\\
 = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}^{V}$$
 
-The equation uses the fact that $$\hat{A}\_{t}^{(2)} = r_{t} +\gamma r_{t+1}   + \gamma^2 V(s_{t+2}) - V(s_{t}) \\
+The equation uses the fact that $$\hat{A}_{t}^{(2)} = r_{t} +\gamma r_{t+1}   + \gamma^2 V(s_{t+2}) - V(s_{t}) \\
     = r_{t} + \gamma V(s_{t+1}) - V(s_{t}) +\gamma (r_{t+1}   + \gamma V(s_{t+2})  - V(s_{t+1})) \\
     = \delta_{t}^{V} + \gamma \delta_{t+1}^{V}$$
 
