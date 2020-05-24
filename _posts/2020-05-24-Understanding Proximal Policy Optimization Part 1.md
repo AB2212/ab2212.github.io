@@ -388,7 +388,11 @@ $= E[r\_{0} +\gamma r\_{1}  + \gamma^2 V^{\pi}(s\_{2})| s\_{0}=s,a\_{0}=a]\\
 
 When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
 
-![td\_n.png](attachment:td\_n.png)
+<figure>
+  <img class="image" width="100%" src="{{ site.baseurl }}/img/td_n.png" alt="">
+  <figcaption class="image-caption" style="font-size:11px">Source: David Silver's Lecture Slides (link in references)
+</figcaption>
+</figure>
 
 What if there was a way to strike a balance between the two? The answer to that is Generalized Advantage Estimate (GAE). In GAE, we take the weighted sum of all the different step estimates to create the final estimate. Let the $k$-step Advantage estimate be $ \hat{A}\_{t}^{(k)} = r\_{t} +\gamma r\_{t+1}   + \gamma^2 r\_{t+2}+... +\gamma^{k-1} r\_{t+k-1}+ \gamma^{k} V(s\_{t+k}) - V(s\_{t}) $  and the TD residual be $\delta\_{t}^{V} = \hat{A}\_{t}^{(1)} = r\_{t} +\gamma V^{\pi}(s\_{t+1}) - V(s\_{t}) $, then the generalized advantage estimate $GAE(\gamma,\lambda)$ is 
 defined as ,
@@ -415,6 +419,7 @@ Hope you enjoyed reading the post!
 **References and Further Reading:**
     
 - [Deep RL Bootcamp Lecture 4A: Policy Gradients](https://www.youtube.com/watch?v=S_gwYj1Q-44&list=PLFihX_3MLxS8VY0y851LZ6TAZWUZeQ0yN&index=4)
+- [David Silver's Lecture Slides](https://www.davidsilver.uk/teaching/)
 - http://karpathy.github.io/2016/05/31/rl/
 - "Reinforcement Learning" by Richard S. Sutton and Andrew G. Barto
 - [High-Dimensional Continuous Control Using Generalized Advantage Estimation](https://arxiv.org/abs/1506.02438)
