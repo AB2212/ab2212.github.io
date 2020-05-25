@@ -68,7 +68,7 @@ The function looks like this
   <figcaption class="image-caption" style="font-size:11px"> Reward Function</figcaption>
 </figure>
 
-I have chosen an arbitrary function with one peak and some plateau region, to show that we can update the parameters of our probability density function in such a way that we get values closer to the peak (in this case 4) when we sample from this distribution. We can think of the probability density as our policy, we want to have a policy which takes actions that gives higher reward. Time to look at some code!
+I have chosen an arbitrary function with one peak and some plateau region, to show that we can update the parameters of our probability density function in such a way that we get values closer to the peak (in this case 4) when we sample from this distribution. We can think of the probability density as our policy, we want to have a policy which takes actions that gives higher reward. Let's do a simulation to understand how the policy evolves to maximize return. We will start with a random Gaussian policy and update it using gradient sampling as mentioned above to get our final policy. Time to look at some code!
 
 <p> </p>
 
@@ -276,7 +276,7 @@ In policy gradient method, the random variable $x$ is a whole trajectory $\tau$ 
 
 $\tau = (s_{0}, a_{0}, r_{0}, s_{1}, a_{1}, r_{1}, ..., ..., s_{T -1 }, a_{T-1}, r_{T-1})$,
 
-We will calculate the gradient of expectation(our performance measure) over trajectories ,
+We will calculate the gradient of expectation (our performance measure) over trajectories ,
 
 $\nabla_{\theta} J(\theta) = \nabla_{\theta}E_{\tau}[R(\tau)] = E_{\tau}[ R(\tau) \nabla_{\theta}\log p(\tau\|\theta)]$,
 
@@ -332,7 +332,6 @@ Steps for Monte-Carlo estimate:
 
 We can also do a Temporal-Difference TD(0) update, by regressing $V^{\pi}(s_{t})$ over $r_{t} + \gamma V^{\pi}(s_{t+1})$ after collecting several samples of $(s_{t}, a_{t}, s_{t+1}, r_{t})$. Motivation for this comes from the Bellman Equation,
 $$V^{\pi}(s) = \underset{a}\sum \pi(a|s)\underset{s^{\prime}}\sum P(s^{\prime}|s,a)[r(s,a,s^{\prime}) + \gamma V^{\pi}(s^{\prime})]$$ 
-
 
 Since we don't know the transition dynamics ($P(s^{\prime}\|s,a)$), so we collect experiences $(s,a,s^{\prime},r)$ using our current policy and average over them to roughly get the expected value. Steps for TD estimate:
 
@@ -401,7 +400,7 @@ $$= E[r_{0} +\gamma r_{1}  + \gamma^2 V^{\pi}(s_{2})| s_{0}=s,a_{0}=a]\\
 = E[r_{0} +\gamma r_{1} + \gamma^2 r_{2}  + \gamma^3 V^{\pi}(s_{3})| s_{0}=s,a_{0}=a]\\
 = ....$$
 
-When we take 1 step, i.e.Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
+When we take 1 step, i.e. Temporal-Difference TD(0), we are reducing the variance as $V^{\pi}(s)$ (estimated return at state $s$) won't change across trajectories unless we update it, but it increases our bias as we are estimating the expected return for current state and action using another estimate and not from the observed value. Initially we start our $V^{\pi}(s)$ with random guess and it updates slowly from experience which may not give us the true picture, hence it is biased. When we take all the steps till T-1,  we are essentially using Monte-Carlo which is unbiased but high variance as the whole trajectory may be completely different with different returns because of small changes in action selection or state transitioning. The more sampled reward terms we consider more will be our variance because of the noise in them. The good thing about Monte-Carlo is that we have guaranteed convergence and also it is unbiased as we are estimating it from the observed rewards.
 
 <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/td_n.png" alt="">
