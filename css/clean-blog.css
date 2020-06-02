@@ -415,7 +415,7 @@ body {
 
 .language-python + .language-plaintext {
         border-left: 1px solid grey;
-        margin-left: 1rem ;//!important;
+        margin-left: 1rem !important;
 }
 .language-python + .language-plaintext code { background-color: white !important; }
 .language-python + .language-plaintext pre  { background-color: white !important; }
