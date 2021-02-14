@@ -127,9 +127,9 @@ $\mathcal{L}^{(t)} = \sum\_{i}^n [g\_i f\_{t}(x\_{i}) + \frac{1}{2}h\_if\_{i}^2(
 Let $I\_{j} = \\{i\|q(x\_{i})=j\\}$ be the instance set of leaf j, i.e. set of all the input data points that ended up in j-th leaf node. So, for a given tree, if our input data point ends up in some j-th leaf node after going through all the decisions, we are going to put that data point in our set $I\_{j}$. We can rewrite the objective function as follows,
 
 $\mathcal{L}^{(t)}
-= \sum\_{i}^n [g\_i f\_{t}(x\_{i}) + \frac{1}{2}h\_if\_{i}^2(x\_{i})] + \gamma T + \frac{1}{2}\lambda||w||^{2}$
+= \sum\_{i}^n [g\_i f\_{t}(x\_{i}) + \frac{1}{2}h\_if\_{t}^2(x\_{i})] + \gamma T + \frac{1}{2}\lambda||w||^{2}$
 
-$= \sum\_{j=1}^T[(\sum\_{i \in I\_{j}}g\_{i})w\_{j} + \frac{1}{2}(\sum\_{i \in I\_{j}} + \lambda)w\_{j}^2] +\gamma T$
+$= \sum\_{j=1}^T[(\sum\_{i \in I\_{j}}g\_{i})w\_{j} + \frac{1}{2}(\sum\_{i \in I\_{j}}\h_i + \lambda)w\_{j}^2] +\gamma T$
 
 For a fixed tree structure $q(x)$, we can compute the optimal weight $w\_{j}^{*}$ of leaf j by differentiating the above equation with respect to w and equating to 0,
 
