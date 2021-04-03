@@ -129,7 +129,7 @@ Let $I\_{j} = \\{i\|q(x\_{i})=j\\}$ be the instance set of leaf j, i.e. set of a
 $\mathcal{L}^{(t)}
 = \sum\_{i}^n [g\_i f\_{t}(x\_{i}) + \frac{1}{2}h\_if\_{t}^2(x\_{i})] + \gamma T + \frac{1}{2}\lambda||w||^{2}$
 
-$= \sum\_{j=1}^T[(\sum\_{i \in I\_{j}}g\_{i})w\_{j} + \frac{1}{2}(\sum\_{i \in I\_{j}}\h_i + \lambda)w\_{j}^2] +\gamma T$
+$= \sum\_{j=1}^T[(\sum\_{i \in I\_{j}}g\_{i})w\_{j} + \frac{1}{2}(\sum\_{i \in I\_{j}}\h\_i + \lambda)w\_{j}^2] +\gamma T$
 
 For a fixed tree structure $q(x)$, we can compute the optimal weight $w\_{j}^{*}$ of leaf j by differentiating the above equation with respect to w and equating to 0,
 
