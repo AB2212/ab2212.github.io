@@ -219,8 +219,8 @@ For iteration=1, 2, 3,... do
   Run policy for T timesteps or N trajectories
   Estimate advantage function at all timesteps
 
-$$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}\_n$$
-$$\text{subject to }KL_{\pi_{\theta_{old}}}(\pi_{\theta}) <= \delta$$
+  $$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}\_n$$
+  $$\text{subject to }KL_{\pi_{\theta_{old}}}(\pi_{\theta}) <= \delta$$
 
 end for
 
