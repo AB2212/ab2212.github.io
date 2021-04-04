@@ -88,7 +88,7 @@ plt.plot(x, my_func(x))
 </figure>
 
 
-<p> <\p>
+<p> </p>
   
 ```python
 # Gaussian Distribution
