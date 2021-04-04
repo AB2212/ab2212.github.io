@@ -80,8 +80,9 @@ x = np.linspace(-2, 10, 201)
 
 plt.plot(x, my_func(x))
 ```
+
 <figure>
-  <img class="image" width="100%" src="{{ site.baseurl }}/img/importance_sampling.png" alt="">
+  <img class="image" width="100%" src="{{ site.baseurl }}/img/reward_function.png" alt="">
   <figcaption class="image-caption" style="font-size:11px"> Reward Function</figcaption>
 </figure>
 
@@ -158,6 +159,10 @@ axes[1].set_title('Distribution of difference')
 plt.savefig("./importance_sampling.png")
 plt.show()
 ```
+<figure>
+  <img class="image" width="100%" src="{{ site.baseurl }}/img/importance_sampling.png" alt="">
+  <figcaption class="image-caption" style="font-size:11px">Comparison of Importance Sampling and Actual Sampling</figcaption>
+</figure>
 The results look good, the estimates are really close. In this case, the importance sampling estimates have higher variance but if we are free to choose $q$, an optimized choice of $q$ can give us better estimates.
 
 Now, we know what importance sampling is. The only thing remaining is to find out how we can use this to rewrite policy gradient optimization problem to solve the previously mentioned issues.
@@ -229,13 +234,13 @@ KL Divergence constraint provides nice behaviour in terms of optimization but it
 
 The important contribution in PPO is the use of the following objective function, which has the benefits of TRPO, but with simpler implementation and better sample efficiency.
 
-Let $r_t (\theta) = \frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)} be the probability ratio$
+Let $r_t (\theta) = \frac{\pi_{\theta}(a_t\|s_t)}{\pi_{\theta_{old}}(a_t\|s_t)} be the probability ratio$
 
 $L^{CLIP} (\theta) = \hat{E_t}[min(r_t(\theta)\hat{A_t}, clip(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A_t}]$
 , where epsilon is a hyperparameter (e.g. $\epsilon$ = 0.2)
 
 Let's dig deeper. The first term inside $\min$ is our usual objective function and the second the term is the clipped probability ratio whose range is 1-$\epsilon$ to 1+$\epsilon$. We take the minimum of the two so the final clipped objective is a lower bound of the unclipped objective function. In the figure below, we can see that when the Advantage is positive and we need to increase our probability of current actions for better performance, thus increase the probability ratio, but the upper clip prevents the ratio from becoming greater than 1+$\epsilon$, because of the flat objective there will be 0 gradient and hence no update.This way we never move too far from our original policy and can perform multiple gradient updates to obtain better sample efficiency. Similarly, when the advantage is negative and we need to decrease the probability of the current actions, but the lower clip prevents us to move below 1-$\epsilon$. The advantage estimate is gnerally noise so we don't want to make updates that take our new policy too far from original policy based on single update. When the ratio lies in the slanted region of the clipped objective function, we are basically dealing with the original unclipped objective in this region.  
 <figure>
-  <img class="image" width="100%" src="{{ site.baseurl }}/img/clipped surrogate objective.png" alt="">
+  <img class="image" width="100%" src="{{ site.baseurl }}/img/clipped\ surrogate objective.png" alt="">
   <figcaption class="image-caption" style="font-size:11px">Source: Proximal Policy Optimization [paper](https://arxiv.org/pdf/1707.06347.pdf) by OpenAI</figcaption>
 </figure>
