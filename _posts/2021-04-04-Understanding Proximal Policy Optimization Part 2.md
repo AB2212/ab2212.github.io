@@ -83,9 +83,12 @@ plt.plot(x, my_func(x))
 
 <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/reward_function.png" alt="">
-  <figcaption class="image-caption" style="font-size:11px"> Reward Function</figcaption>
+  <figcaption class="image-caption" style="font-size:11px text-align:center" > Reward Function</figcaption>
 </figure>
 
+
+<p> <\p>
+  
 ```python
 # Gaussian Distribution
 def gaussian(mean, std):
@@ -210,15 +213,15 @@ TRPO tends to give monotonic improvement, with little tuning of hyperparameters 
 
 [Peusocode:](https://www.youtube.com/watch?v=xvRrgxcpaHY&list=PLFihX_3MLxS8VY0y851LZ6TAZWUZeQ0yN&index=6) 
 
-    For iteration=1, 2, 3,... do
-  
-      Run policy for T timesteps or N trajectories
-      Estimate advantage function at all timesteps
+For iteration=1, 2, 3,... do
 
-    $$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}\_n$$
-    $$\text{subject to }KL_{\pi_{\theta_{old}}}(\pi_{\theta}) <= \delta$$
+  Run policy for T timesteps or N trajectories
+  Estimate advantage function at all timesteps
 
-    end for
+$$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}\_n$$
+$$\text{subject to }KL_{\pi_{\theta_{old}}}(\pi_{\theta}) <= \delta$$
+
+end for
 
 This can be efficiently solved by using conjugate gradient descent
 
@@ -234,7 +237,7 @@ KL Divergence constraint provides nice behaviour in terms of optimization but it
 
 The important contribution in PPO is the use of the following objective function, which has the benefits of TRPO, but with simpler implementation and better sample efficiency.
 
-Let $r_t (\theta) = \frac{\pi_{\theta}(a_t\|s_t)}{\pi_{\theta_{old}}(a_t\|s_t)} be the probability ratio$
+Let $r_t (\theta) = \frac{\pi_{\theta}(a_t\|s_t)}{\pi_{\theta_{old}}(a_t\|s_t)}$ be the probability ratio
 
 $L^{CLIP} (\theta) = \hat{E_t}[min(r_t(\theta)\hat{A_t}, clip(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A_t}]$
 , where epsilon is a hyperparameter (e.g. $\epsilon$ = 0.2)
