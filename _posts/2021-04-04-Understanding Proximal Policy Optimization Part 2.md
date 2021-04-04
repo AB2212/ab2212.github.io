@@ -163,11 +163,9 @@ Now, we know what importance sampling is. The only thing remaining is to find ou
 
 In policy gradient method, we try to directly maximize the expected advantage estimate, i.e. $E_t[\hat{A}\_t]$ (please check [part 1](https://www.digdeepml.com/2020/05/24/Understanding-Proximal-Policy-Optimization-Part-1/) for details). Another way to look at the objective function is that, we collect data using some policy $\pi_{\theta_{old}}$ and we want our updated new policy $\pi_\theta$ to have high advantage estimate, i.e,
 
-$E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta}}[A^\pi(s_t, a_t)]$
-
-$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}\[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}A^{\pi_{\theta_{old}}}(s_t, a_t)\]$
-
-$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}\[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat{A}\_{t})\]$
+$$E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta}}[A^\pi(s_t, a_t)]$$
+$$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}\[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}A^{\pi_{\theta_{old}}}(s_t, a_t)\]$$
+$$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}\[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat{A}\_{t})\]$$
 
 To draw analogy with our earlier example of importance sampling, $\pi_{\theta_{old}}$ is our $q$ and $\pi_\theta$ is our $p$, and advantage estimate $\hat{A}\_t$ is our function $f$. 
 NEED TO CHECK: This formulation helps us to optimize the parameters and obtain a better new policy using data collected from old policy. We can go over the collected data samples multiple times during gradient update and use all the information, instead of just using it once. There is still one problem remaining. Do you see it? We can't just take the old policy and keep updating the parameters based on that. We need to be cautious of the step sizes that we take because the training might become unstable as mentioned earlier. One way to solve it is using trust regions.
