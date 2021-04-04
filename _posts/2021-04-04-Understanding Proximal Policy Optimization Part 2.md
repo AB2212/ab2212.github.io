@@ -36,9 +36,10 @@ $E[f(x)] \approx 1/N *\sum_{i=1}^{N} f(X_{i})$, where $ X_{i} \sim p$
 
 But what if it is difficult to generate samples from p. There is a clever workaround for this. So instead of drawing samples from $p$ we draw samples from a known density $q$ and using the following trick we can easily calculate the expectation with respect to $p$. 
 
-$$ E_{x\sim p}[f(x)] = \int f(x)p(x)dx = \int f(x)\frac{p(x)}{q(x)}q(x)dx $$, we can only do this if $q(x) = 0 \implies p(x) = 0$
+$$ E_{x\sim p}[f(x)] = \int f(x)p(x)dx = \int f(x)\frac{p(x)}{q(x)}q(x)dx $$
 $$ \approx 1/N *\sum_{i=1}^{N} f(X_{i})\frac{p(X_{i})}{q(X_{i})}, \text{where } X_{i} \sim q$$
- 
+
+,we can only do this if $q(x) = 0 \implies p(x) = 0$
 
 Let's look at an example, suppose we want to estimate the expectation of an arbitary function $f$ (same function from part 1), such that $f: \mathcal{R}-> \mathcal{R}$,
 
@@ -83,7 +84,7 @@ plt.plot(x, my_func(x))
 
 <figure>
   <img class="image" width="100%" src="{{ site.baseurl }}/img/reward_function.png" alt="">
-  <figcaption class="image-caption" style="font-size:11px text-align:center" > Reward Function</figcaption>
+  <figcaption class="image-caption" style="font-size:11px" > Reward Function</figcaption>
 </figure>
 
 
