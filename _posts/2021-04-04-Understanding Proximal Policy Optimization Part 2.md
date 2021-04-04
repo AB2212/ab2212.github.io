@@ -173,24 +173,24 @@ NEED TO CHECK: This formulation helps us to optimize the parameters and obtain a
 ### Trust Region
 
 This is a method in optimization where we use a model or a local approximation of the function we are trying to optimize. We only optimize using this approximation inside a region where it is close to the original function, this region is called the trust region. The local approximation of function is accurate near the starting point but gets inaccurate if we get too far from starting the point, so we have trust regions where we trust our approximation. Let's look at it in more details, suppose we want to optimize the function $f$ at $x_k$ such that $f(x_{k+1}) < f(x_k)$. To solve this we can create a model $m_k$ using Taylor-series expansion of $f$ around $x_k$, which is,
-$ f(x_k+p) = f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k + tp)p$, where $t \in (0,1)$
+$$ f(x_k+p) = f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k + tp)p$, where $t \in (0,1)$$
 
-$ m_k(p) =   f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k)p$
+$$ m_k(p) =   f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k)p$$
 
 To obtain the next step $x_{k+1}$ we solve the following subproblem,
-$\underset{p\in\mathbb{R}^n} \min m_k(p) =   f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k)p$ such that $\lvert \lvert p \rvert\rvert<= \Delta_{k}$, where $\Delta_{k}>0$ is the trust-region radius. One of the most important element here is choosing the trust region, if we don't get significant reduction in the function value, we reduce the trust region and solve the subproblem again. Next we will see how using the trust region approach we can limit having large updates to our policy.
+$$\underset{p\in\mathbb{R}^n} \min m_k(p) =   f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k)p$$ such that $\lvert \lvert p \rvert\rvert<= \Delta_{k}$, where $\Delta_{k}>0$ is the trust-region radius. One of the most important element here is choosing the trust region, if we don't get significant reduction in the function value, we reduce the trust region and solve the subproblem again. Next we will see how using the trust region approach we can limit having large updates to our policy.
 
 ### Trust Region Policy Optimization (TRPO)
 
 To define the trust region, we use KL divergence to measure how far we are from the starting point which is the old policy and our new point which is the new policy. Basically we are trying to limit the change in probabilities using the trust region. So after incorporating this knowledge to our importance sampling interpretation, the constrained objective function looks like this:
 
-$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}}(a_t|s_t)\hat{A}\_t]$
+$$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}}(a_t|s_t)\hat{A}\_t]$$
 
-subject to $\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot|s_t), \pi_\theta(\cdot|s_t)]]<= \delta$
+subject to $\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot\|s_t), \pi_\theta(\cdot\|s_t)]]<= \delta$
 
 and the penalized or unconstrained version looks like this: 
 
-$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}}(a_t|s_t)\hat{A}\_t]-\beta\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot|s_t), \pi_\theta(\cdot|s_t)]]$, for some coefficient $\beta$
+$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t\|s_t)}{\pi_{\theta_{old}}}(a_t\|s_t)\hat{A}\_t]-\beta\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot\|s_t), \pi_\theta(\cdot\|s_t)]]$, for some coefficient $\beta$
 
 Quoting lines from the paper [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347): "TRPO uses a hard constraint rather than a penalty because it is hard to choose a single value of that performs well across different problems—or even within a single problem, where the the characteristics change over the course of learning. Hence, to achieve our goal of a first-order algorithm that emulates the monotonic improvement of TRPO, experiments show that it is not sufficient to simply choose a fixed penalty coefficient and optimize the penalized objective Equation with SGD; additional modifications are required"
 
