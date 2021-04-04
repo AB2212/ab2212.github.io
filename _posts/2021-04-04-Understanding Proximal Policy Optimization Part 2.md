@@ -161,15 +161,15 @@ Now, we know what importance sampling is. The only thing remaining is to find ou
 
 ###  Importance Sampling Interpretation
 
-In policy gradient method, we try to directly maximize the expected advantage estimate, i.e. $E_t[\hat{A}_t]$ (please check [part 1](https://www.digdeepml.com/2020/05/24/Understanding-Proximal-Policy-Optimization-Part-1/) for details). Another way to look at the objective function is that, we collect data using some policy $\pi_{\theta_{old}}$ and we want our updated new policy $\pi_\theta$ to have high advantage estimate, i.e,
+In policy gradient method, we try to directly maximize the expected advantage estimate, i.e. $E_t[\hat{A}\_t]$ (please check [part 1](https://www.digdeepml.com/2020/05/24/Understanding-Proximal-Policy-Optimization-Part-1/) for details). Another way to look at the objective function is that, we collect data using some policy $\pi_{\theta_{old}}$ and we want our updated new policy $\pi_\theta$ to have high advantage estimate, i.e,
 
 $E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta}}[A^\pi(s_t, a_t)]$
 
 $ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}A^{\pi_{\theta_{old}}}(s_t, a_t)]$
 
-$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat{A}_{t})]$
+$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat{A}\_{t})]$
 
-To draw analogy with our earlier example of importance sampling, $\pi_{\theta_{old}}$ is our $q$ and $\pi_\theta$ is our $p$, and advantage estimate $\hat{A}_t$ is our function $f$. 
+To draw analogy with our earlier example of importance sampling, $\pi_{\theta_{old}}$ is our $q$ and $\pi_\theta$ is our $p$, and advantage estimate $\hat{A}\_t$ is our function $f$. 
 NEED TO CHECK: This formulation helps us to optimize the parameters and obtain a better new policy using data collected from old policy. We can go over the collected data samples multiple times during gradient update and use all the information, instead of just using it once. There is still one problem remaining. Do you see it? We can't just take the old policy and keep updating the parameters based on that. We need to be cautious of the step sizes that we take because the training might become unstable as mentioned earlier. One way to solve it is using trust regions.
 
 ### Trust Region
@@ -186,13 +186,13 @@ $\underset{p\in\mathbb{R}^n} \min m_k(p) =   f(x_k) + \nabla f(x_k)^Tp+ \frac{1}
 
 To define the trust region, we use KL divergence to measure how far we are from the starting point which is the old policy and our new point which is the new policy. Basically we are trying to limit the change in probabilities using the trust region. So after incorporating this knowledge to our importance sampling interpretation, the constrained objective function looks like this:
 
-$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}}(a_t|s_t)\hat{A}_t]$
+$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}}(a_t|s_t)\hat{A}\_t]$
 
 subject to $\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot|s_t), \pi_\theta(\cdot|s_t)]]<= \delta$
 
 and the penalized or unconstrained version looks like this: 
 
-$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}}(a_t|s_t)\hat{A}_t]-\beta\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot|s_t), \pi_\theta(\cdot|s_t)]]$, for some coefficient $\beta$
+$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t|s_t)}{\pi_{\theta_{old}}}(a_t|s_t)\hat{A}\_t]-\beta\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot|s_t), \pi_\theta(\cdot|s_t)]]$, for some coefficient $\beta$
 
 Quoting lines from the paper [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347): "TRPO uses a hard constraint rather than a penalty because it is hard to choose a single value of that performs well across different problems—or even within a single problem, where the the characteristics change over the course of learning. Hence, to achieve our goal of a first-order algorithm that emulates the monotonic improvement of TRPO, experiments show that it is not sufficient to simply choose a fixed penalty coefficient and optimize the penalized objective Equation with SGD; additional modifications are required"
 
@@ -202,11 +202,9 @@ TRPO tends to give monotonic improvement, with little tuning of hyperparameters 
 [Peusocode:](https://www.youtube.com/watch?v=xvRrgxcpaHY&list=PLFihX_3MLxS8VY0y851LZ6TAZWUZeQ0yN&index=6) 
 
 for iteration=1, 2, 3,... do
-
     Run policy for T timesteps or N trajectories
     Estimate advantage function at all timesteps
-    
-$$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}_n$$
+$$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}\_n$$
 $$\text{subject to }KL_{\pi_{\theta_{old}}}(\pi_{\theta}) <= \delta$$
 end for
 
