@@ -7,6 +7,8 @@ author:     "Abhijeet Biswas"
 header-img: "img/moon.jpg"
 ---
 
+DRAFT:
+
 Welcome to the second part of this three-part blog series where we deep dive into the theory and implementation details behind Proximal Policy Optimization (PPO) in PyTorch. In the first part of the series, we understood what Policy Gradient methods are; in the second part we will look into recent developments in Policy Gradient methods like Trust Regions and Clipped Surrogate Objective to understand how PPO works; in the third part we will go through the detailed implementation of PPO in Pytorch where we will teach an agent to land a rocket in gym's [Lunar Lander](https://gym.openai.com/envs/LunarLander-v2/) environment and also help a [Bipedal Walker](https://gym.openai.com/envs/BipedalWalker-v2/) learn to walk. Let's get started!
 <figure>
   <video controls width="100%" src="{{ site.baseurl }}/img/ppo_video.mp4" autoplay loop/>
