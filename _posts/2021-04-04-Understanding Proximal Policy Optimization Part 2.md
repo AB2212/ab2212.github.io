@@ -164,7 +164,9 @@ Now, we know what importance sampling is. The only thing remaining is to find ou
 In policy gradient method, we try to directly maximize the expected advantage estimate, i.e. $E_t[\hat{A}\_t]$ (please check [part 1](https://www.digdeepml.com/2020/05/24/Understanding-Proximal-Policy-Optimization-Part-1/) for details). Another way to look at the objective function is that, we collect data using some policy $\pi_{\theta_{old}}$ and we want our updated new policy $\pi_\theta$ to have high advantage estimate, i.e,
 
 $$E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta}}[A^\pi(s_t, a_t)]$$
+
 $$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}A^{\pi_{\theta_{old}}}(s_t, a_t)]$$
+
 $$ = E_{s_t\sim \pi_{\theta_{old}}, a_t\sim \pi_{\theta_{old}}}[\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}\hat{A}\_{t})]$$
 
 To draw analogy with our earlier example of importance sampling, $\pi_{\theta_{old}}$ is our $q$ and $\pi_\theta$ is our $p$, and advantage estimate $\hat{A}\_t$ is our function $f$. 
@@ -173,7 +175,7 @@ NEED TO CHECK: This formulation helps us to optimize the parameters and obtain a
 ### Trust Region
 
 This is a method in optimization where we use a model or a local approximation of the function we are trying to optimize. We only optimize using this approximation inside a region where it is close to the original function, this region is called the trust region. The local approximation of function is accurate near the starting point but gets inaccurate if we get too far from starting the point, so we have trust regions where we trust our approximation. Let's look at it in more details, suppose we want to optimize the function $f$ at $x_k$ such that $f(x_{k+1}) < f(x_k)$. To solve this we can create a model $m_k$ using Taylor-series expansion of $f$ around $x_k$, which is,
-$$ f(x_k+p) = f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k + tp)p$, where $t \in (0,1)$$
+$$ f(x_k+p) = f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k + tp)p, \text{where} t \in (0,1)$$
 
 $$ m_k(p) =   f(x_k) + \nabla f(x_k)^Tp+ \frac{1}{2}p^T\nabla^2f(x_k)p$$
 
@@ -190,7 +192,7 @@ subject to $\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot\|s_t), \pi_\theta(\cdot\|s_t)]
 
 and the penalized or unconstrained version looks like this: 
 
-$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t\|s_t)}{\pi_{\theta_{old}}}(a_t\|s_t)\hat{A}\_t]-\beta\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot\|s_t), \pi_\theta(\cdot\|s_t)]]$, for some coefficient $\beta$
+$$\underset{\theta}\max \hat{E_t}[\frac{\pi_{\theta}(a_t\|s_t)}{\pi_{\theta_{old}}}(a_t\|s_t)\hat{A}\_t]-\beta\hat{E_t}[KL[\pi_{\theta_{old}}(\cdot\|s_t), \pi_\theta(\cdot\|s_t)]]$$, for some coefficient $\beta$
 
 Quoting lines from the paper [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347): "TRPO uses a hard constraint rather than a penalty because it is hard to choose a single value of that performs well across different problems—or even within a single problem, where the the characteristics change over the course of learning. Hence, to achieve our goal of a first-order algorithm that emulates the monotonic improvement of TRPO, experiments show that it is not sufficient to simply choose a fixed penalty coefficient and optimize the penalized objective Equation with SGD; additional modifications are required"
 
@@ -199,12 +201,15 @@ TRPO tends to give monotonic improvement, with little tuning of hyperparameters 
 
 [Peusocode:](https://www.youtube.com/watch?v=xvRrgxcpaHY&list=PLFihX_3MLxS8VY0y851LZ6TAZWUZeQ0yN&index=6) 
 
-for iteration=1, 2, 3,... do
-    Run policy for T timesteps or N trajectories
-    Estimate advantage function at all timesteps
-$$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}\_n$$
-$$\text{subject to }KL_{\pi_{\theta_{old}}}(\pi_{\theta}) <= \delta$$
-end for
+  For iteration=1, 2, 3,... do
+  
+      Run policy for T timesteps or N trajectories
+      Estimate advantage function at all timesteps
+
+  $$\underset{\theta} \max \sum_{n=1}^N\frac{\pi_{\theta}(a_n|s_n)}{\pi_{\theta_{old}}(a_n|s_n)}\hat{A}\_n$$
+  $$\text{subject to }KL_{\pi_{\theta_{old}}}(\pi_{\theta}) <= \delta$$
+
+  end for
 
 This can be efficiently solved by using conjugate gradient descent
 
