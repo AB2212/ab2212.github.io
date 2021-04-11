@@ -250,3 +250,10 @@ The first term inside $\min$ is our usual objective function and the second the 
   <img class="image" width="100%" src="{{ site.baseurl }}/img/clipped_surrogate_objective.PNG" alt="">
   <figcaption class="image-caption" style="font-size:11px">Source: Proximal Policy Optimization paper by OpenAI (link in references)</figcaption>
 </figure>
+
+**References and Further Reading:**
+    
+- [Deep RL Bootcamp Lecture 4A: Policy Gradients](https://www.youtube.com/watch?v=S_gwYj1Q-44&list=PLFihX_3MLxS8VY0y851LZ6TAZWUZeQ0yN&index=4)
+- Proximal Policy Optimization [paper](https://arxiv.org/abs/1707.06347)
+- Trust Region Policy Optimization [paper](https://arxiv.org/abs/1502.05477)
+- 
