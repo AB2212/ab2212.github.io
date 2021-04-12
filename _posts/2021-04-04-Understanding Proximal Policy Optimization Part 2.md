@@ -256,4 +256,3 @@ The first term inside $\min$ is our usual objective function and the second the 
 - [Deep RL Bootcamp Lecture 4A: Policy Gradients](https://www.youtube.com/watch?v=S_gwYj1Q-44&list=PLFihX_3MLxS8VY0y851LZ6TAZWUZeQ0yN&index=4)
 - Proximal Policy Optimization [paper](https://arxiv.org/abs/1707.06347)
 - Trust Region Policy Optimization [paper](https://arxiv.org/abs/1502.05477)
-- 
