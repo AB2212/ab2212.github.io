@@ -164,7 +164,7 @@ XGBoost uses approximate algorithm to decide the candidate split points using [W
  
  Besides regularisation, shrinkage $\eta$ is used to scale newly added weights after each step of tree boosting, similar to learning rate in stochastic optimization. This reduces the influences of each tree and leaves space for improvement for future trees, which helps in creating smoother boundaries and better generalization. Also similar to Random Forest, column subsampling is also used which reduces overfitting (more than traditional row sampling) and also speeds up computation.
 
-In addition to this, algorithm is aware of the sparsity pattern in the data. A default direction is chosen in each tree node when a value is missing in the sparse matrix x and the instance is classified into the default direction. The optimal default direction is learnt from the data (not covered in this post).
+In addition to this, algorithm is aware of the sparsity pattern in the data. A default direction is chosen in each tree node when a value is missing in the sparse matrix and the instance is classified into the default direction. The optimal default direction is learnt from the data (not covered in this post).
 
 Hope this helps you to understand the inner workings of XGBoost algorithm and gives you a head start in reading the paper. I would urge the readers to go read the entire paper for more details that I haven't included in this post. Please find the link to the paper in reference section below.
  
